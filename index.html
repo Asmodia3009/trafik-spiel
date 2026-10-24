@@ -5,57 +5,74 @@
 <title>Trafik-Tycoon 3D – Ich-Perspektive</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-:root{--card:rgba(255,250,240,.92);--ink:#4a3526;--soft:#8a6f58;--acc:#b5651d;--acc2:#d9a066;--line:#e6d5bb}
+:root{--card:rgba(250,242,225,.94);--ink:#3d291a;--soft:#7a5e47;--acc:#9c5221;--acc2:#c8964e;--line:#d6be99}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;background:#cfeaff;font-family:Georgia,'Palatino Linotype',serif;color:var(--ink);user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#cfeaff;font-family:Georgia,'Palatino Linotype','Book Antiqua',serif;color:var(--ink);user-select:none}
 #gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
 #hud{position:fixed;inset:0;pointer-events:none;z-index:5}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 14px;box-shadow:0 3px 10px rgba(120,80,30,.15)}
-#tl{position:absolute;left:14px;top:12px}
-#money{font-size:24px;font-weight:bold}#free,#date,#weather,#bills{font-size:12.5px;color:var(--soft)}#bills{color:#b5651d}
-#tr{position:absolute;right:12px;top:12px;display:flex;gap:6px;pointer-events:auto}
-#tr button{font-family:inherit;font-size:14px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:8px 12px;cursor:pointer}
-#tr button:hover{background:#fff}
-#goal{position:absolute;left:14px;bottom:14px;max-width:440px;font-size:14px;line-height:1.35}#goal b{color:var(--acc);font-size:12.5px;text-transform:uppercase;letter-spacing:.6px}
-#hint{position:absolute;left:50%;bottom:84px;transform:translateX(-50%);padding:10px 20px 11px;background:rgba(66,46,32,.9);color:#fff6e4;border:2px solid #d9a066;border-radius:16px;opacity:0;transition:opacity .15s;max-width:min(720px,86vw);text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.25)}
-#hint .hn{font-size:19px;font-weight:bold;color:#ffd98a;letter-spacing:.2px}#hint .hd{font-size:13.5px;color:#f1dfc4;margin:2px 0 5px;font-style:italic}#hint .hk{font-size:15.5px;color:#fff}
-kbd{display:inline-block;min-width:22px;padding:0 6px;margin:0 2px;border-radius:6px;background:#fff6e4;color:#4a3526;border:1px solid #c9a877;border-bottom-width:3px;font-family:inherit;font-weight:bold;font-size:14px;line-height:20px;text-align:center}
-#carry{position:absolute;right:14px;bottom:14px;font-size:14px;display:none;max-width:360px}
-#route{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:#e8f0ff;border:1px solid #9ab;border-radius:14px;padding:8px 16px;font-size:14px;display:none}
-#toasts{position:absolute;left:50%;top:70px;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;align-items:center}
-.toast{background:rgba(255,250,240,.95);border:1px solid var(--line);border-radius:12px;padding:7px 16px;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,.15);transition:opacity .8s;max-width:70vw;text-align:center}
-#cross{z-index:6;position:fixed;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;display:none;pointer-events:none}
-#cross:before,#cross:after{content:"";position:absolute;background:#fff;box-shadow:0 0 3px #000;border-radius:2px}
-#cross:before{left:6px;top:0;width:2px;height:14px}#cross:after{top:6px;left:0;height:2px;width:14px}
-#dlg{position:fixed;inset:0;background:rgba(60,40,20,.35);display:none;align-items:center;justify-content:center;z-index:20}
-#dlgBox{background:#fffaf0;border:1px solid var(--line);border-radius:18px;padding:16px 20px;width:92vw;max-width:640px;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 8px 30px rgba(0,0,0,.3);user-select:text}
-#dlgHead{display:flex;justify-content:space-between;align-items:center}#dlgTitle{margin:0;font-size:22px;color:var(--acc)}
-#dlgBody{overflow:auto;margin-top:8px;padding-right:6px;font-size:15px;line-height:1.4}
-#dlgBody h3{margin:12px 0 4px;font-size:16px;color:var(--acc)}
-button{font-family:inherit;background:var(--acc);color:#fff;border:0;border-radius:10px;padding:8px 14px;cursor:pointer;font-size:14.5px;margin:3px 4px 3px 0}
-button:hover:not(:disabled){background:#9a5214}button:disabled{background:#cdbba3;cursor:default}button.ghost{background:transparent;color:var(--soft);border:1px solid var(--line)}
-select,input[type=range]{font-family:inherit;accent-color:var(--acc)}select{padding:5px 8px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink)}input[type=range]{width:100%}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:13px;padding:8px 14px;box-shadow:0 4px 14px rgba(40,22,8,.22)}
+#tl{position:absolute;left:14px;top:12px;background:linear-gradient(180deg,rgba(62,40,24,.94),rgba(42,27,16,.96));border:1.5px solid #b88946;border-radius:14px;padding:9px 16px;color:#f7ebd4;box-shadow:0 6px 18px rgba(18,10,4,.36),inset 0 1px 0 rgba(255,232,185,.2)}
+#money{font-size:22px;font-weight:bold;color:#ffe4a8;letter-spacing:.3px;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+#free{display:none}
+#date{font-size:13px;color:#ecd9b8;margin-top:2px}
+#weather{font-size:12px;color:#d6be96;margin-top:3px;padding-top:3px;border-top:1px solid rgba(200,150,78,.28)}
+#bills{font-size:12px;color:#ffb870;margin-top:3px;font-weight:bold}
+#free:empty,#weather:empty,#bills:empty{display:none}
+#tr{position:absolute;right:14px;top:12px;display:flex;gap:7px;pointer-events:auto}
+#tr button{font-family:inherit;font-size:13.5px;background:linear-gradient(180deg,rgba(62,40,24,.93),rgba(42,27,16,.95));color:#f7ebd4;border:1.5px solid #b88946;border-radius:12px;padding:7px 13px;cursor:pointer;box-shadow:0 4px 12px rgba(18,10,4,.28),inset 0 1px 0 rgba(255,232,185,.18);margin:0;transition:transform .1s,background .15s}
+#tr button:hover{background:linear-gradient(180deg,rgba(80,52,32,.96),rgba(54,35,21,.98));color:#fff5e0}
+#goal{position:absolute;left:14px;bottom:14px;max-width:390px;font-size:13.8px;line-height:1.4;background:linear-gradient(180deg,rgba(251,243,224,.95),rgba(240,226,196,.96));border:1.5px solid #bfa074;border-left:4px solid #9c5221;color:#3d291a;padding:9px 14px;box-shadow:0 5px 16px rgba(28,16,6,.24)}
+#goal b{color:#8c481b;font-size:11.5px;text-transform:uppercase;letter-spacing:.9px;display:block;margin-bottom:2px}
+#hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);padding:8px 18px 9px;background:linear-gradient(180deg,rgba(56,37,23,.94),rgba(38,24,14,.96));color:#fff6e4;border:1.5px solid #c8964e;border-radius:14px;opacity:0;transition:opacity .15s;max-width:min(640px,84vw);text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,232,185,.2)}
+#hint .hn{font-size:16.5px;font-weight:bold;color:#ffe29e;letter-spacing:.2px}
+#hint .hd{font-size:12.5px;color:#e6d0b1;margin:1px 0 4px;font-style:italic}
+#hint .hk{font-size:14px;color:#fff8ec}
+kbd{display:inline-block;min-width:21px;padding:0 6px;margin:0 3px 0 1px;border-radius:5px;background:linear-gradient(180deg,#fff9ec,#e8d6b5);color:#3d291a;border:1px solid #b59260;border-bottom-width:2px;font-family:inherit;font-weight:bold;font-size:12.5px;line-height:18px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+#carry{position:absolute;right:14px;bottom:14px;font-size:13.5px;display:none;max-width:340px;background:linear-gradient(180deg,rgba(62,40,24,.93),rgba(42,27,16,.95));color:#ffe4a8;border:1.5px solid #b88946}
+#route{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:#f7ebd4;border:1.5px solid #9c5221;border-radius:13px;padding:8px 16px;font-size:14px;display:none}
+#toasts{position:absolute;left:50%;top:64px;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;align-items:center}
+.toast{background:linear-gradient(180deg,rgba(58,38,23,.94),rgba(40,26,15,.95));color:#fdf2dc;border:1.5px solid #c8964e;border-radius:12px;padding:7px 16px;font-size:14.5px;box-shadow:0 4px 12px rgba(0,0,0,.28);transition:opacity .8s;max-width:70vw;text-align:center}
+#cross{z-index:6;position:fixed;left:50%;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;display:none;pointer-events:none;opacity:.8}
+#cross:before,#cross:after{content:"";position:absolute;background:#fff8e8;box-shadow:0 0 3px rgba(40,20,5,.85);border-radius:2px}
+#cross:before{left:5px;top:0;width:2px;height:12px}#cross:after{top:5px;left:0;height:2px;width:12px}
+#dlg{position:fixed;inset:0;background:rgba(28,18,10,.46);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:20}
+#dlgBox{background:linear-gradient(180deg,#fbf3e2 0%,#f2e3c6 100%);border:3px solid #5c3b20;outline:1.5px solid #c8964e;border-radius:18px;padding:20px 24px;width:92vw;max-width:620px;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 14px 40px rgba(15,8,2,.48),inset 0 1px 0 rgba(255,252,242,.85);user-select:text}
+#dlgHead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(156,82,33,.22);padding-bottom:8px}
+#dlgTitle{margin:0;font-size:22px;color:#6e3614;letter-spacing:.2px}
+#dlgBody{overflow:auto;margin-top:10px;padding-right:6px;font-size:15px;line-height:1.48;color:#3d291a}
+#dlgBody h3{margin:12px 0 4px;font-size:16px;color:#7c3f18}
+.intro-card{text-align:center;padding:4px 8px 2px}
+.intro-crest{font-size:11.5px;letter-spacing:1.6px;text-transform:uppercase;color:#8c5828;margin-bottom:6px;font-weight:bold}
+.intro-lead{font-size:15.8px;line-height:1.58;color:#3d291a;margin:8px 0 10px;text-align:left;background:rgba(255,251,242,.65);border:1px solid #dcc59e;border-radius:12px;padding:12px 16px}
+.intro-lead p{margin:0 0 9px}.intro-lead p:last-child{margin:0}
+.intro-sub{font-size:12.8px;color:#7a5e47;margin:8px 0 14px;font-style:italic}
+.intro-btn{font-size:16px;padding:10px 24px;border-radius:12px;background:linear-gradient(180deg,#a85b24,#7d3f14);color:#fff8ea;border:1.5px solid #d8a65c;box-shadow:0 4px 12px rgba(60,30,10,.3);font-weight:bold;letter-spacing:.2px}
+.intro-btn:hover{background:linear-gradient(180deg,#ba672b,#8c4717)!important}
+button{font-family:inherit;background:linear-gradient(180deg,#a65923,#824216);color:#fff8ec;border:1px solid #c8964e;border-radius:10px;padding:7px 14px;cursor:pointer;font-size:14.5px;margin:3px 4px 3px 0;box-shadow:0 2px 5px rgba(40,20,5,.2)}
+button:hover:not(:disabled){background:linear-gradient(180deg,#b86429,#934b19)}button:disabled{background:#cdbba3;border-color:#bfa98e;color:#f5eee4;cursor:default;box-shadow:none}button.ghost{background:rgba(255,250,240,.6);color:var(--ink);border:1px solid #bfa074;box-shadow:none}
+button.ghost:hover:not(:disabled){background:rgba(255,252,245,.95)}
+select,input[type=range]{font-family:inherit;accent-color:var(--acc)}select{padding:5px 8px;border-radius:8px;border:1px solid #bfa074;background:#fffdf8;color:var(--ink)}input[type=range]{width:100%}
 .hint,.kv span:first-child{color:var(--soft)}.hint{font-size:13px}
 .kv{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:2px 0}
-.tech{border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin:6px 0;background:#fffdf7}.tech.done{background:#eef3e4;border-color:#c7d8b0}.tech.locked{opacity:.5}.tech p{margin:2px 0 4px;font-size:13px;color:var(--soft)}
-.bill{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:6px 10px;margin-bottom:6px;background:#fffdf7;font-size:14px}.bill small{display:block;color:var(--soft)}
-.card2{background:#eef3e4;border:1px solid #c7d8b0;border-radius:12px;padding:10px 12px;margin:8px 0}
-.prod{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:10px;background:#fffdf7}.prod h3{margin:0 0 4px}
+.tech{border:1px solid #d4bc94;border-radius:12px;padding:8px 11px;margin:6px 0;background:rgba(255,252,244,.8)}.tech.done{background:#eaf0df;border-color:#b8cca0}.tech.locked{opacity:.55}.tech p{margin:2px 0 4px;font-size:13px;color:var(--soft)}
+.bill{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid #d4bc94;border-radius:10px;padding:6px 10px;margin-bottom:6px;background:rgba(255,252,244,.82);font-size:14px}.bill small{display:block;color:var(--soft)}
+.card2{background:#eaf0df;border:1px solid #b8cca0;border-radius:12px;padding:10px 12px;margin:8px 0}
+.prod{border:1px solid #d4bc94;border-radius:14px;padding:10px 12px;margin-bottom:10px;background:rgba(255,252,244,.82)}.prod h3{margin:0 0 4px}
 table.bd{border-collapse:collapse;font-size:13px;margin:4px 0 8px}table.bd td{padding:1px 12px 1px 0;color:var(--soft)}table.bd td:last-child{text-align:right;color:var(--ink)}table.bd tr.t td{border-top:1px solid var(--line);font-weight:bold;color:var(--ink)}
-.warn{font-size:12.5px;background:#fbf0d9;border:1px solid var(--line);border-radius:10px;padding:6px 10px;color:var(--soft);margin-top:8px}
+.warn{font-size:12.5px;background:#f5e6c8;border:1px solid #d4bc94;border-radius:10px;padding:6px 10px;color:var(--soft);margin-top:8px}
 label.sl{display:block;font-size:13px;margin:6px 0 2px}ul.help{padding-left:18px;margin:6px 0}ul.help li{margin:3px 0;font-size:14px}
-#pause{position:fixed;inset:0;background:rgba(255,246,228,.55);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:10;font-size:22px;cursor:pointer;text-align:center;gap:10px}
+#pause{position:fixed;inset:0;background:rgba(38,24,14,.52);backdrop-filter:blur(2px);color:#fff6e4;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:10;font-size:22px;cursor:pointer;text-align:center;gap:10px;text-shadow:0 2px 6px rgba(0,0,0,.5)}
 #pause button{font-size:16px}
 #fade{position:fixed;inset:0;background:#10142a;opacity:0;pointer-events:none;transition:opacity .4s;z-index:15}
-#loading{position:fixed;inset:0;background:#fbf3e4;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:30}
-#photoHint{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.45);color:#fff;border-radius:12px;padding:6px 14px;font-size:13px;display:none}
+#loading{position:fixed;inset:0;background:#f6ebd4;color:#4a321f;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:30}
+#photoHint{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(42,27,16,.88);color:#fff6e4;border:1px solid #b88946;border-radius:12px;padding:6px 14px;font-size:13px;display:none}
 </style>
 </head>
 <body>
 <div id="loading">Das Dorf wacht auf …</div>
 <div id="hud">
- <div id="tl" class="card"><div id="money" title="Geld in deiner Kassa (inkl. Steuern, die noch abzuführen sind)"></div><div id="free" title="Kassa abzüglich offener Rechnungen und aufgelaufener Steuern"></div><div id="date"></div><div id="weather" title="Wetter beeinflusst den Solarstrom. Strom: erzeugt = PV + Generatoren, braucht = alle Maschinen."></div><div id="bills"></div></div>
- <div id="tr"><button id="bLogB" title="Fortschritt, Ziele, Begriffe">Logbuch (L)</button><button id="bPhotoB" title="Fotomodus ohne Anzeigen">Foto (P)</button><button id="bMusicB" title="Musik an/aus">Musik (M)</button><button id="bMenu" title="Hilfe, Tempo, Speichern">Menü / Hilfe (H)</button></div>
+ <div id="tl" class="card"><div id="money" title="Bargeld in deiner Trafik-Kassa"></div><div id="free"></div><div id="date"></div><div id="weather" title="Solarstrom und Verbrauch deiner Maschinen"></div><div id="bills"></div></div>
+ <div id="tr"><button id="bLogB" title="Tagebuch, Dorfchronik &amp; Fortschritt (Taste L)">📖 Tagebuch</button><button id="bPhotoB" title="Fotomodus ohne Anzeigen (Taste P)">📷 Foto</button><button id="bMusicB" title="Musik ein/aus (Taste M)">🎵 Musik</button><button id="bMenu" title="Menü, Steuerung &amp; Einstellungen (Taste H oder Esc)">⚙ Menü</button></div>
  <div id="route" class="card"></div>
  <div id="toasts"></div>
  <div id="goal" class="card"></div>
@@ -64,9 +81,9 @@ label.sl{display:block;font-size:13px;margin:6px 0 2px}ul.help{padding-left:18px
 </div>
 <div id="cross"></div>
 <div id="photoHint">Fotomodus: Klick / Enter speichert ein Bild · P beendet</div>
-<div id="pause"><div>Klicke, um weiterzuspielen</div><button id="pauseMenu">Menü / Hilfe</button></div>
+<div id="pause"><div>Klicke, um weiterzuspielen</div><button id="pauseMenu">⚙ Menü &amp; Steuerung</button></div>
 <div id="fade"></div>
-<div id="dlg"><div id="dlgBox"><div id="dlgHead"><h2 id="dlgTitle"></h2><button id="dlgClose" class="ghost">Schließen (Esc)</button></div><div id="dlgBody"></div></div></div>
+<div id="dlg"><div id="dlgBox"><div id="dlgHead"><h2 id="dlgTitle"></h2><button id="dlgClose" class="ghost">Schließen</button></div><div id="dlgBody"></div></div></div>
 <script>console.warn('Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation'),
 /**
  * @license
@@ -554,30 +571,118 @@ Batch.prototype.mesh=function(parent,material,shadow){if(!this.pos.length)return
 function shade(hex,f){const c=new THREE.Color(hex);c.multiplyScalar(f);return '#'+c.getHexString();}
 // ---- Schilder & Labels ----
 function rrect(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.lineTo(x+w-r,y);g.quadraticCurveTo(x+w,y,x+w,y+r);g.lineTo(x+w,y+h-r);g.quadraticCurveTo(x+w,y+h,x+w-r,y+h);g.lineTo(x+r,y+h);g.quadraticCurveTo(x,y+h,x,y+h-r);g.lineTo(x,y+r);g.quadraticCurveTo(x,y,x+r,y);g.closePath();}
-function fitFont(g,lines,maxW,maxH,bold,start){let fs=start;const lh=1.18;while(fs>10){g.font=(bold?'bold ':'')+fs+'px Georgia,serif';let w=0;lines.forEach(l=>{w=Math.max(w,g.measureText(l).width);});if(w<=maxW&&fs*lh*lines.length<=maxH)break;fs-=2;}return fs;}
-function signCanvas(text,w,h,bg,fg,style){
- const c=mkCanvas(w,h),g=c.getContext('2d');bg=bg||'#fff3d8';fg=fg||'#4a3526';
- const dark=shade(bg,0.55);
- rrect(g,2,2,w-4,h-4,Math.min(w,h)*0.14);g.fillStyle='#8a5a34';g.fill();
- const b=Math.max(7,h*0.06);rrect(g,2+b,2+b,w-4-2*b,h-4-2*b,Math.min(w,h)*0.1);g.fillStyle=bg;g.fill();
- g.lineWidth=3;g.strokeStyle=dark;g.globalAlpha=0.35;rrect(g,2+b*2,2+b*2,w-4-4*b,h-4-4*b,Math.min(w,h)*0.07);g.stroke();g.globalAlpha=1;
- const ls=String(text).split('\n');const fs=fitFont(g,ls,w*0.8,h*0.72,true,Math.round(h*0.5/Math.max(1,ls.length*0.7)));
- g.font='bold '+fs+'px Georgia,serif';g.textAlign='center';g.textBaseline='middle';
- ls.forEach((l,i)=>{const y=h/2+(i-(ls.length-1)/2)*fs*1.18;g.fillStyle='rgba(255,255,255,.35)';g.fillText(l,w/2+1.5,y+2);g.fillStyle=fg;g.fillText(l,w/2,y);});
+function fitFont(g,lines,maxW,maxH,bold,start){let fs=start;const lh=1.18;while(fs>10){g.font=(bold?"bold ":"")+fs+"px Georgia,serif";let w=0;lines.forEach(l=>{w=Math.max(w,g.measureText(l).width);});if(w<=maxW&&fs*lh*lines.length<=maxH)break;fs-=2;}return fs;}
+function signCanvas(text,w,h,bg,fg){
+ const c=mkCanvas(w,h),g=c.getContext("2d");
+ const isSlate=bg==="#2f3f2f",isBlue=bg==="#dfeaf5",isGold=bg==="#ffe9a0";
+ const topC=isSlate?"#27382b":isBlue?"#cbd8e3":isGold?"#e3c26b":"#dfc79b";
+ const botC=isSlate?"#1b281e":isBlue?"#b3c4d3":isGold?"#cfa94e":"#cbb07f";
+ const frameC=isSlate?"#4a301b":"#52341c",innerC=isSlate?"#9c7c48":"#875b31";
+ const inkC=isSlate?"#efe2c6":isBlue?"#1f364d":(fg==="#b5232a"||fg==="#a83228"||fg==="#8a3a2a"||fg==="#7a2a2a")?"#7d2219":"#382110";
+ const subC=isSlate?"#d4c4a2":isBlue?"#324e69":"#54351d";
+ g.fillStyle=frameC;g.fillRect(0,0,w,h);
+ const b=Math.max(6,Math.round(h*0.055));
+ const gr=g.createLinearGradient(0,b,0,h-b);gr.addColorStop(0,topC);gr.addColorStop(1,botC);
+ rrect(g,b,b,w-2*b,h-2*b,Math.min(w,h)*0.08);g.fillStyle=gr;g.fill();
+ // Dezente Holzmaserung auf dem Schildblatt
+ g.save();rrect(g,b,b,w-2*b,h-2*b,Math.min(w,h)*0.08);g.clip();
+ for(let y=b+4;y<h-b;y+=7){g.fillStyle=isSlate?"rgba(255,255,255,0.025)":"rgba(80,45,15,0.045)";g.fillRect(b,y,w-2*b,2);}
+ g.restore();
+ // Zierlinie & Eckbeschläge
+ const ib=b+Math.max(5,Math.round(h*0.045));
+ g.lineWidth=Math.max(2,Math.round(h*0.018));g.strokeStyle=innerC;g.globalAlpha=0.55;
+ rrect(g,ib,ib,w-2*ib,h-2*ib,Math.min(w,h)*0.05);g.stroke();g.globalAlpha=1;
+ const nr=Math.max(2.5,h*0.022);g.fillStyle=innerC;
+ [[ib+nr*1.8,ib+nr*1.8],[w-ib-nr*1.8,ib+nr*1.8],[ib+nr*1.8,h-ib-nr*1.8],[w-ib-nr*1.8,h-ib-nr*1.8]].forEach(p=>{g.beginPath();g.arc(p[0],p[1],nr,0,Math.PI*2);g.fill();});
+ const ls=String(text).split("\n");
+ g.textAlign="center";g.textBaseline="middle";
+ if(ls.length===1){
+  const fs=fitFont(g,ls,w*0.78,h*0.64,true,Math.round(h*0.46));
+  g.font="bold "+fs+"px Georgia,serif";
+  g.fillStyle=isSlate?"rgba(0,0,0,0.45)":"rgba(255,248,230,0.45)";g.fillText(ls[0],w/2+1.2,h/2+1.5);
+  g.fillStyle=inkC;g.fillText(ls[0],w/2,h/2);
+ }else{
+  const fs1=fitFont(g,[ls[0]],w*0.78,h*0.36,true,Math.round(h*0.34));
+  const rest=ls.slice(1).join(" · ");
+  const fs2=fitFont(g,[rest],w*0.8,h*0.26,false,Math.min(Math.round(fs1*0.74),Math.round(h*0.24)));
+  const y1=h*0.37,y2=h*0.68;
+  g.font="bold "+fs1+"px Georgia,serif";
+  g.fillStyle=isSlate?"rgba(0,0,0,0.45)":"rgba(255,248,230,0.45)";g.fillText(ls[0],w/2+1.2,y1+1.5);
+  g.fillStyle=inkC;g.fillText(ls[0],w/2,y1);
+  g.strokeStyle=innerC;g.globalAlpha=0.38;g.lineWidth=1.5;g.beginPath();g.moveTo(w*0.22,h*0.53);g.lineTo(w*0.78,h*0.53);g.stroke();g.globalAlpha=1;
+  g.font=fs2+"px Georgia,serif";
+  g.fillStyle=subC;g.fillText(rest,w/2,y2);
+ }
  return c;}
 function signPlane(text,pw,ph,x,y,z,ry,parent,bg,fg){
- const w=Math.min(512,Math.max(128,Math.round(pw*220))),h=Math.max(48,Math.round(w*ph/pw));
+ const w=Math.min(512,Math.max(160,Math.round(pw*240))),h=Math.max(64,Math.round(w*ph/pw));
  const t=new THREE.CanvasTexture(signCanvas(text,w,h,bg,fg));t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;
- const m=new THREE.MeshBasicMaterial({map:t,transparent:true,alphaTest:0.4});
- const pg=new THREE.PlaneGeometry(pw,ph),o=new THREE.Group();const f1=new THREE.Mesh(pg,m),f2=new THREE.Mesh(pg,m);f1.position.z=0.012;f2.position.z=-0.012;f2.rotation.y=Math.PI;o.add(f1,f2);o.position.set(x,y,z);o.rotation.y=ry||0;parent.add(o);if(TP)W.signs.push(o);return o;}
+ const m=new THREE.MeshStandardMaterial({map:t,roughness:0.78,metalness:0.04});
+ const pg=new THREE.PlaneGeometry(pw,ph),o=new THREE.Group();
+ // Echtes 3D-Holzbrett und Rahmen um das Schild
+ const fb=new Batch();fb.as("wood");
+ fb.bx(pw,ph,0.042,"#5c3c22",0,-ph/2,0);
+ const ft=0.045,fd=0.058;
+ fb.bx(pw+ft*2,ft,fd,"#462c18",0,ph/2-ft*0.3,0);
+ fb.bx(pw+ft*2,ft,fd,"#462c18",0,-ph/2-ft*0.7,0);
+ fb.bx(ft,ph+ft*1.4,fd,"#462c18",-pw/2-ft*0.5,-ph/2-ft*0.7,0);
+ fb.bx(ft,ph+ft*1.4,fd,"#462c18",pw/2+ft*0.5,-ph/2-ft*0.7,0);
+ fb.as(null);fb.mesh(o);
+ const f1=new THREE.Mesh(pg,m),f2=new THREE.Mesh(pg,m);f1.position.z=0.023;f2.position.z=-0.023;f2.rotation.y=Math.PI;
+ f1.receiveShadow=true;f2.receiveShadow=true;
+ o.add(f1,f2);o.position.set(x,y,z);o.rotation.y=ry||0;parent.add(o);if(TP)W.signs.push(o);return o;}
 function labelSprite(){const c=mkCanvas(512,176);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=2;const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:t,depthTest:true,transparent:true}));
- sp.scale.set(2.7,0.928,1);sp.renderOrder=10;sp.userData={c,t,last:''};sp.raycast=()=>{};return sp;}
-function setLabel(sp,l1,l2,col){const k=l1+'|'+l2+'|'+col;if(sp.userData.last===k)return;sp.userData.last=k;const c=sp.userData.c,g=c.getContext('2d');g.clearRect(0,0,512,176);
- rrect(g,6,10,500,150,34);g.fillStyle='rgba(255,248,232,.95)';g.fill();g.lineWidth=5;g.strokeStyle='#c9a877';g.stroke();
- g.fillStyle=col||'#4a3526';g.textAlign='center';g.textBaseline='middle';
- let fs=fitFont(g,[l1],440,60,true,52);g.font='bold '+fs+'px Georgia,serif';g.fillText(l1,256,l2?58:88);
- if(l2){fs=fitFont(g,[l2],450,50,false,44);g.font=fs+'px Georgia,serif';g.fillStyle='#7a5f48';g.fillText(l2,256,114);}
+ sp.scale.set(2.5,0.86,1);sp.renderOrder=10;sp.userData={c,t,last:""};sp.raycast=()=>{};return sp;}
+function setLabel(sp,l1,l2,col){const k=l1+"|"+l2+"|"+col;if(sp.userData.last===k)return;sp.userData.last=k;const c=sp.userData.c,g=c.getContext("2d");g.clearRect(0,0,512,176);
+ rrect(g,8,12,496,148,30);g.fillStyle="rgba(54,36,22,0.92)";g.fill();g.lineWidth=4;g.strokeStyle="#c8964e";g.stroke();
+ g.fillStyle=col&&col!=="#4a3526"?col:"#ffe4a8";g.textAlign="center";g.textBaseline="middle";
+ let fs=fitFont(g,[l1],440,56,true,48);g.font="bold "+fs+"px Georgia,serif";g.fillText(l1,256,l2?58:86);
+ if(l2){fs=fitFont(g,[l2],450,46,false,40);g.font=fs+"px Georgia,serif";g.fillStyle="#ecd8b6";g.fillText(l2,256,114);}
  sp.userData.t.needsUpdate=true;}
+// ---- Natürliche Pflanzkübel & Blumenkisterl ----
+function addPlanterPot(b,x,y,z,seed,leafyOnly){
+ const s=seed||0,potH=0.42,potR=0.31;
+ // Terrakotta-/Holzkübel mit oberem Rand, Fassreifen und dunkler Blumenerde
+ b.cy(potR*0.86,potH,"#9b563a",x,y,z,10);
+ b.cy(potR,0.06,"#84462d",x,y+potH-0.05,z,10);
+ b.cy(potR*0.91,0.03,"#42342b",x,y+potH*0.42,z,10);
+ b.cy(potR*0.88,0.03,"#3d281a",x,y+potH-0.01,z,10);
+ // Natürliche, mehrteilige Blattbüschel statt einer riesigen Kugel
+ b.as("leaf");
+ const greens=["#3d6b33","#4c7c3e","#588a47","#355e2c","#47733a"];
+ b.ico(0.21,greens[s%5],x,y+potH+0.13,z,1.15,0.72,1.15);
+ for(let i=0;i<6;i++){
+  const a=i*1.047+(s*0.37),r=0.14+(i%2)*0.04,lh=y+potH+0.09+(i%3)*0.045;
+  b.ico(0.15,greens[(s+i)%5],x+Math.cos(a)*r,lh,z+Math.sin(a)*r,1.15,0.68,1.05);
+ }
+ if(!leafyOnly){
+  const flCols=["#d94b58","#edb842","#f7f2e6","#e06d44","#9b78c4"];
+  for(let i=0;i<9;i++){
+   const a=i*0.7+(s*0.53),r=0.05+(i%3)*0.065,fy=y+potH+0.21+((i+s)%3)*0.032;
+   b.sp(0.042,flCols[(s+i)%5],x+Math.cos(a)*r,fy,z+Math.sin(a)*r,1.1,0.75,1.1);
+  }
+ }
+ b.as(null);
+}
+function addWindowPlanter(b,x,y,z,w,d,seed){
+ const s=seed||0,h=0.26;
+ b.bx(w,h,d,"#7d5030",x,y,z);
+ b.bx(w+0.05,0.04,d+0.05,"#5e3a20",x,y+h-0.03,z);
+ b.bx(w-0.06,0.03,d-0.06,"#3b2618",x,y+h-0.01,z);
+ b.as("leaf");
+ const greens=["#3d6b33","#4c7c3e","#588a47","#355e2c"];
+ const n=Math.max(3,Math.round(w/0.2));
+ for(let i=0;i<n;i++){
+  const px=x-w*0.38+(n>1?i/(n-1)*w*0.76:0),pz=z+((i+s)%2-0.5)*d*0.18;
+  b.ico(0.13,greens[(s+i)%4],px,y+h+0.07,pz,1.2,0.7,1.05);
+ }
+ const flCols=["#d94b58","#edb842","#f7f2e6","#e06d44","#9b78c4"];
+ for(let i=0;i<n+3;i++){
+  const px=x-w*0.4+(i/(n+2))*w*0.8,pz=z+(((i*3+s)%3)-1)*d*0.2,fy=y+h+0.15+((i+s)%2)*0.025;
+  b.sp(0.038,flCols[(s+i)%5],px,fy,pz,1.1,0.75,1.1);
+ }
+ b.as(null);
+}
 
 // ===== Welt (three.js) =====
 const TP=VARIANT==='tp';
@@ -789,51 +894,51 @@ function buildHalle(){
  W.pvG=new THREE.Group();b.rg.add(W.pvG);
  // Beschriftung der Halle
  const hs=new THREE.Group();outG.add(hs);
- signPlane('LAGERHALLE\nProduktion · Lager · Keller',5.6,1.3,22.5,3.75,4.45,0,hs,'#fff3d8','#7a3b22');
+ signPlane('WERKHALLE\nManufaktur · Lager · Gewölbekeller',5.4,1.2,22.5,3.75,4.45,0,hs,'#fff3d8','#7a3b22');
  // Hallentor: Holzbalken & Laternen
  const hb=new Batch();hb.bx(0.4,3.3,0.4,'#6a4a2e',20.7,0,4.45);hb.bx(0.4,3.3,0.4,'#6a4a2e',24.3,0,4.45);hb.bx(4.0,0.35,0.5,'#6a4a2e',22.5,2.55,4.45);
  hb.as('metal');hb.bx(3.0,0.02,0.3,'#a9afb5',22.5,0.08,4.22);hb.as(null);
  // Kübel-Pflanzen & Fässer vor der Halle
- [[19,5.2],[26.6,5.2]].forEach(p=>{hb.cy(0.38,0.5,'#c07050',p[0],0,p[1],8);hb.ico(0.55,'#4aa04a',p[0],0.95,p[1],1,1.1,1);hb.ico(0.2,'#ff8fa8',p[0]+0.2,1.35,p[1],1,1,1);});
+ [[19,5.2],[26.6,5.2]].forEach((p,i)=>addPlanterPot(hb,p[0],0,p[1],i+1));
  hb.mesh(outG);
  // Kellerluke
  const hatch=new THREE.Group();const hh=new Batch();hh.bx(2.4,0.12,2.4,'#6a4a2e',0,0,0);hh.bx(1.8,0.16,1.8,'#946d46',0,0.1,0);for(let i=0;i<4;i++)hh.bx(1.8,0.04,0.05,'#6a4a2e',0,0.27,-0.6+i*0.4);
  hh.bx(0.12,0.12,1.8,'#555',-0.45,0.28,0);hh.bx(0.12,0.12,1.8,'#555',0.45,0.28,0);hh.mesh(hatch);
  const ring=addMesh(new THREE.TorusGeometry(0.22,0.05,6,10),mat('#555'),0,0.33,0.7,hatch);ring.rotation.x=Math.PI/2;
- signPlane('KELLER\n(E: hinabsteigen)',1.5,0.62,0,1.0,1.4,0,hatch);
+ signPlane('GEWÖLBEKELLER\nAbstieg zur Manufaktur',1.6,0.62,0,1.0,1.4,0,hatch);
  hatch.position.set(14,0,-10);outG.add(hatch);W.hatch=hatch;
  // Dachleiter (Ostwand)
  const lad=new THREE.Group();const lb2=new Batch();lb2.bx(0.1,5.4,0.1,'#8a6a46',-0.35,0,0);lb2.bx(0.1,5.4,0.1,'#8a6a46',0.35,0,0);for(let i=0;i<10;i++)lb2.bx(0.8,0.07,0.07,'#a37e52',0,0.4+i*0.5,0);lb2.mesh(lad);
- signPlane('Dachleiter\nzu den PV-Modulen',1.5,0.62,0,1.0,0.5,0,lad);
+ signPlane('DACHLEITER\nAufstieg zum Hallendach',1.6,0.62,0,1.0,0.5,0,lad);
  lad.position.set(32.9,0,-1);lad.rotation.y=Math.PI/2;outG.add(lad);W.ladder=lad;addCol(32.5,-1.6,33.3,-0.4,'out');
  // Rohlager
  const rl=new THREE.Group();const rb=new Batch();rb.bx(2.4,1.0,1.4,'#a07a48',0,0,0);for(let i=0;i<5;i++)rb.bx(2.4,0.07,1.42,'#7e5c34',0,0.08+i*0.2,0);rb.bx(2.6,0.12,1.6,'#8a6a3a',0,1.0,0);
  for(let i=0;i<4;i++)rb.ico(0.32,'#8aa83c',-0.9+i*0.6,1.2,0,1.2,0.6,1.5);for(let i=0;i<3;i++)rb.ico(0.28,'#b88a3e',-0.6+i*0.6,1.18,0.45,1.2,0.5,1.2);
- rb.mesh(rl);signPlane('Rohlager\nTabakblätter',1.8,0.7,0,1.55,0.82,0,rl);
+ rb.mesh(rl);signPlane('ROHLAGER\nGeerntete Tabakblätter',1.8,0.68,0,1.55,0.82,0,rl);
  rl.position.set(13.4,0,-6);outG.add(rl);addCol(12.2,-6.8,14.6,-5.2,'out');W.rohlager=rl;
  W.rohlager.lab=labelSprite();W.rohlager.lab.position.set(0,2.7,0);rl.add(W.rohlager.lab);
  // Lieferbox
  const lbx=new THREE.Group();const db=new Batch();db.bx(1.8,1.1,1.2,'#e0b050',0,0,0);db.bx(1.9,0.14,1.3,'#fff6e0',0,1.1,0);for(let i=0;i<3;i++)db.bx(0.12,1.1,1.22,'#c9922f',-0.6+i*0.6,0,0);
  db.bx(1.0,0.2,0.1,'#3f4350',0,0.9,0.62);db.cy(0.1,0.7,'#8a6a46',1.3,0,0.5,6);db.bx(0.5,0.05,0.5,'#c9922f',1.3,0.7,0.5);db.cyc(0.16,0.08,'#3f4350',-1.1,0.2,0.75,8,Math.PI/2);db.cyc(0.16,0.08,'#3f4350',-0.6,0.2,0.75,8,Math.PI/2);
- db.mesh(lbx);signPlane('LIEFERBOX\nGroßhandel: Rohstoffe kaufen',2.2,0.8,0,1.85,0,0,lbx);
+ db.mesh(lbx);signPlane('WARENANNAHME\nRohstoffe vom Großhandel',2.2,0.78,0,1.85,0,0,lbx);
  lbx.position.set(16.0,CEL_Y,-5.3);lbx.rotation.y=Math.PI;celG.add(lbx);addCol(14.3,-6.0,17.05,-4.55,'cel');W.lieferbox=lbx;
  // Werkbank
  const wb=new THREE.Group();const wbB=new Batch();wbB.bx(3,0.9,1.2,'#8a6a46',0,0,0);wbB.bx(3.1,0.1,1.3,'#b8925c',0,0.9,0);wbB.bx(0.15,0.9,1.1,'#6e5236',-1.4,0,0);wbB.bx(0.15,0.9,1.1,'#6e5236',1.4,0,0);
  wbB.bx(0.5,0.35,0.5,'#c0c4cc',-0.9,1.0,0);wbB.bx(0.2,0.4,0.3,'#555',-1.2,1.0,0.3);wbB.cy(0.15,0.12,'#8a8f99',0.1,1.0,0.1,8);
  wbB.bx(0.9,1.1,0.1,'#e8dcc0',0.6,1.4,-0.55);for(let i=0;i<4;i++){wbB.bx(0.06,0.5,0.04,['#c0392b','#2f6fb0','#e0b030','#4a9a4a'][i],0.3+i*0.22,1.6,-0.47);}
  wbB.bx(0.5,0.05,0.2,'#8a6a46',-0.2,1.55,-0.5);wbB.bx(0.05,0.35,0.05,'#6e5236',-0.2,1.2,-0.5);
- wbB.mesh(wb);signPlane('WERKBANK\nMaschinen · PV · Ausbau',2.2,0.75,0,2.55,-0.3,0,wb);
+ wbB.mesh(wb);signPlane('WERKBANK\nGeräte · Sonnenstrom · Ausbau',2.2,0.75,0,2.55,-0.3,0,wb);
  wb.position.set(20.4,CEL_Y,-5.3);wb.rotation.y=Math.PI;celG.add(wb);addCol(18.8,-6.0,22.0,-4.6,'cel');W.werkbank=wb;
  // Büro-Eck: Schreibtisch + Computer
  const dk=new THREE.Group();const dB=new Batch();dB.bx(2.6,0.85,1.2,'#7d5a3a',0,0,0);dB.bx(2.7,0.08,1.3,'#a67c52',0,0.85,0);dB.bx(0.9,0.5,1.1,'#6a4a30',-0.8,0.1,0);
  for(let i=0;i<4;i++)dB.bx(0.6,0.04,0.45,i%2?'#ffffff':'#f3e6c8',-0.8+i*0.28,0.93+i*0.05,0.1,i*0.1);dB.bx(0.5,0.4,0.05,'#c0392b',0.8,1.4,-0.4);dB.cy(0.14,0.2,'#e8e0d0',0.9,0.93,0.1,8);dB.bx(0.4,0.04,0.3,'#fff',0.2,0.93,0.15);
  dB.bx(0.7,0.04,0.45,'#2b4a2b',0.9,0.93,0.35);dB.mesh(dk);
- signPlane('FINANZAMT\nSteuern & Rechnungen',2.4,0.8,0.5,2.0,-0.45,0,dk,'#f0e4c4','#7a2a2a');
+ signPlane('KASSENBUCH\nBuchhaltung & Steuern',2.3,0.76,0.5,2.0,-0.45,0,dk,'#f0e4c4','#7a2a2a');
  dk.position.set(30,0,-10.9);outG.add(dk);addCol(28.6,-11.6,31.4,-10.2,'out');W.desk=dk;
  const pc=new THREE.Group();const pB=new Batch();pB.bx(2.2,0.85,1.2,'#4b5666',0,0,0);pB.bx(2.3,0.08,1.3,'#6b7686',0,0.85,0);pB.bx(0.95,0.62,0.08,'#222',0,0.93,-0.25);pB.bx(0.15,0.3,0.15,'#333',0,0.93,-0.2);pB.bx(0.8,0.03,0.3,'#d0d4da',0,0.93,0.15);pB.bx(0.14,0.04,0.2,'#d0d4da',0.7,0.93,0.15);
  pB.cy(0.1,0.18,'#e8c050',-0.9,0.93,0.1,8);pB.bx(0.35,0.5,0.35,'#8a93a0',0.85,0,0);pB.mesh(pc);
  const scr=new THREE.Mesh(new THREE.PlaneGeometry(0.84,0.5),new THREE.MeshBasicMaterial({color:'#6fd0ff'}));scr.position.set(0,1.28,-0.2);pc.add(scr);
- signPlane('FORSCHUNG\nComputer',1.8,0.7,0,2.0,-0.2,0,pc,'#dfeaf5','#2b4a6a');
+ signPlane('TÜFTLER-ECKE\nRezepte & Technik',1.9,0.7,0,2.0,-0.2,0,pc,'#dfeaf5','#2b4a6a');
  pc.position.set(26.5,0,-11);outG.add(pc);addCol(25.4,-11.7,27.6,-10.3,'out');W.pc=pc;
  // Schwerlastregale an der Wand (gleiche Stellfläche & Kollision)
  const sb=new Batch(),cb=new Batch();
@@ -857,7 +962,7 @@ function buildHalle(){
  // Hallen-Details: Paletten, Fässer, Pflanzen in den Ecken, Teppich beim Büro
  sb.bx(1.2,0.15,1.2,'#b88a50',32.0-0.2,0,-9.5);sb.bx(0.8,0.6,0.8,'#d8b45a',31.6,0.15,-9.5);sb.bx(0.6,0.5,0.6,'#c9a050',31.5,0.75,-9.5);
  sb.cy(0.38,0.9,'#8a6a46',12.5,0,2.6,10);sb.tor(0.38,'#3f4350',12.5,0.3,2.6,Math.PI/2);sb.tor(0.38,'#3f4350',12.5,0.7,2.6,Math.PI/2);
- sb.cy(0.3,0.45,'#c07050',12.5,0,-11.0,8);sb.ico(0.55,'#4aa04a',12.5,0.95,-11.0,1,1.1,1);sb.cy(0.3,0.45,'#c07050',31.5,0,-3,8);sb.ico(0.55,'#58b058',31.5,0.95,-3,1,1.1,1);
+ addPlanterPot(sb,12.5,0,-11.0,3,true);addPlanterPot(sb,31.5,0,-3,4,true);
  sb.cyc(1.6,0.04,'#b05a5a',28,0.06,-9.4,16);sb.cyc(1.2,0.05,'#e8c9a0',28,0.07,-9.4,16);sb.cyc(1.4,0.04,'#7a9ac0',26.5,0.06,-9.5,16);
  sb.mesh(outG);
  // LED-Hallenleuchten (abgehängt)
@@ -882,7 +987,7 @@ function buildHaus(){
  mk('kamin','Kamin',500,-26.9,-4,r=>{const q=new Batch();q.bx(1.8,1.7,0.9,'#9a8a7e',0,0,0);for(let i=0;i<6;i++)for(let j=0;j<3;j++)q.bx(0.28,0.2,0.05,'#b8a89a',-0.7+i*0.28,0.1+j*0.5,0.46,0);q.bx(1.0,0.8,0.2,'#2a1a14',0,0.2,0.4);q.bx(2.0,0.14,1.0,'#6a4a30',0,1.7,0);q.cyc(0.1,0.9,'#7a5a3a',-0.3,0.55,0.5,6,0,0,Math.PI/2);q.cyc(0.1,0.9,'#7a5a3a',0.1,0.5,0.55,6,0,0,Math.PI/2);q.bx(0.5,0.4,0.05,'#ffd9a0',0,2.1,-0.1);q.mesh(r);
   const f=addMesh(new THREE.ConeGeometry(0.28,0.6,5),new THREE.MeshBasicMaterial({color:'#ff9a3a'}),0,0.6,0.42,r,false);W.flame=f;const f2=addMesh(new THREE.ConeGeometry(0.15,0.4,5),new THREE.MeshBasicMaterial({color:'#ffe070'}),0.1,0.5,0.44,r,false);});
  mk('teppich','Teppich',150,-24,-6,r=>{const q=new Batch();q.cyc(1.6,0.04,'#c97a7a',0,0.06,0,20);q.cyc(1.25,0.05,'#f4d0a0',0,0.07,0,20);q.cyc(0.8,0.06,'#7aa0c8',0,0.08,0,20);q.cyc(0.35,0.07,'#ffd45a',0,0.09,0,20);q.mesh(r,undefined,false);});
- mk('pflanze','Zimmerpflanzen',120,-21.2,-8.2,r=>{const q=new Batch();q.cy(0.3,0.5,'#c07050',0,0,0,8);q.cy(0.33,0.08,'#a85a3a',0,0.5,0,8);q.ico(0.5,'#4aa04a',0,0.95,0,1,1.1,1);q.ico(0.32,'#5cb85c',0.25,1.3,0.1);q.ico(0.28,'#3f9a4a',-0.25,1.2,-0.1);q.mesh(r);});
+ mk('pflanze','Zimmerpflanzen',120,-21.2,-8.2,r=>{const q=new Batch();addPlanterPot(q,0,0,0,5);q.mesh(r);});
  mk('regal','Bücherregal',280,-21.2,-4,r=>{const q=new Batch();q.bx(0.6,2.1,2,'#8a5a3a',0,0,0);for(let s=0;s<4;s++)q.bx(0.55,0.06,1.9,'#a67c52',0.02,0.1+s*0.5,0);const cs=['#c0504d','#4f81bd','#9bbb59','#f79646','#8064a2','#e6c34a'];for(let s=0;s<4;s++)for(let i=0;i<7;i++)q.bx(0.34,0.3+((i*7+s)%3)*0.04,0.18,cs[(i+s*2)%6],0.05,0.16+s*0.5,-0.8+i*0.26);q.mesh(r);});
  mk('bett','Bett (Schlafen)',400,-21.8,-6.4,r=>{const q=new Batch();q.bx(1.7,0.45,2.3,'#a0785a',0,0,0);q.bx(1.7,0.9,0.12,'#8a5a3a',0,0,-1.1);q.bx(1.5,0.3,1.9,'#f6f3ec',0,0.45,0.05);q.bx(1.55,0.2,1.0,'#8ab0d8',0,0.6,0.55);q.bx(0.6,0.15,0.4,'#fff',-0.4,0.78,-0.7);q.bx(0.6,0.15,0.4,'#fff',0.4,0.78,-0.7);q.bx(0.6,0.3,0.4,'#c9a877',1.2,0,-0.8);q.mesh(r);});
  // Scheune mit Satteldach, Tor & Heuballen
@@ -914,8 +1019,8 @@ function buildField(){
  W.bloomInst=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(0.16,0),mat('#ff7aa8'),108);W.bloomInst.frustumCulled=false;outG.add(W.bloomInst);
  W.plantPos=[];W.plots.forEach(pl=>{for(let a=0;a<3;a++)for(let b=0;b<3;b++)W.plantPos.push([pl.x-1.1+a*1.1,pl.z-1.1+b*1.1]);});
  // Schild
- const sg=new THREE.Group();cyl(0.08,0.08,1.8,'#7a5a3a',0,0,0,sg,6);signPlane('TABAKFELD\nE: alle Beete auf einmal',1.9,0.85,0,1.95,0,0,sg);sg.position.set(-14.5,0,-18);outG.add(sg);W.fieldSign=sg;addCol(-14.8,-18.3,-14.2,-17.7,'out');
- const sg2=new THREE.Group();cyl(0.08,0.08,1.6,'#7a5a3a',0,0,0,sg2,6);signPlane('Zum Bauernhof\n& Tabakfeld',1.9,0.75,0,1.7,0,0,sg2);sg2.position.set(-22.2,0,5.2);outG.add(sg2);
+ const sg=new THREE.Group();cyl(0.07,0.08,1.52,'#6a4a2e',0,0,0,sg,8);signPlane('TABAKFELD\nSonnige Südhang-Beete',1.9,0.8,0,1.92,0,0,sg);sg.position.set(-14.5,0,-18);outG.add(sg);W.fieldSign=sg;addCol(-14.8,-18.3,-14.2,-17.7,'out');
+ const sg2=new THREE.Group();cyl(0.07,0.08,1.32,'#6a4a2e',0,0,0,sg2,8);signPlane('Zum Bauernhof\n& Tabakfeld',1.85,0.72,0,1.68,0,0,sg2);sg2.position.set(-22.2,0,5.2);outG.add(sg2);
 }
 
 function firGeo(v){return gcache('fir'+v,()=>{const g=new THREE.ConeGeometry(1,1,GQ.detail>=2?24:18,4);const p=g.attributes.position,q=new THREE.Vector3();
@@ -937,8 +1042,8 @@ function buildForest(){
  hb.bx(3.0,0.1,2.3,'#9a5a3a',0,1.4,0,0,0.0,0.12);hb.cy(0.3,0.4,'#8a5a38',1.9,0,0.4,8);hb.bx(0.08,0.5,0.08,'#6a4a2e',1.9,0.4,0.4);hb.bx(0.3,0.15,0.04,'#aab',1.9,0.75,0.4);
  hb.mesh(hs);
  hs.position.set(-2,0,-20);outG.add(hs);W.holz=hs;hs.lab=labelSprite();hs.lab.position.set(0,2.7,0);hs.add(hs.lab);addCol(-3.3,-20.6,-0.7,-19.4,'out');
- const sg=new THREE.Group();cyl(0.08,0.08,2.0,'#7a5a3a',0,0,0,sg,6);signPlane('DEIN WALD\nHolz fällen: E (3 Hiebe)',2.2,0.9,0,2.2,0,0,sg);sg.position.set(-5,0,-23.5);outG.add(sg);
- const sg3=new THREE.Group();signPlane('Holzstapel',1.4,0.4,0,2.4,0,0,sg3);sg3.position.set(-2,0,-18.7);outG.add(sg3);
+ const sg=new THREE.Group();cyl(0.07,0.08,1.75,'#6a4a2e',0,0,0,sg,8);signPlane('WALDSTÜCK\nBrennholz & Stämme',2.1,0.82,0,2.16,0,0,sg);sg.position.set(-5,0,-23.5);outG.add(sg);
+ const sg3=new THREE.Group();cyl(0.06,0.07,1.85,'#6a4a2e',0,0,0,sg3,8);signPlane('Holzstapel',1.4,0.44,0,2.08,0,0,sg3);sg3.position.set(-2,0,-18.7);outG.add(sg3);
 }
 function buildOil(){
  const g=new THREE.Group();g.position.set(46,0,-20);outG.add(g);
@@ -982,23 +1087,23 @@ function buildVillage(){
   const wallMat=texMatUnique('plaster','#b5ab9c',1,1),roofMat=mkRoofMat('#85766a',3);
   const n0=colliders.length;const b=mkBuilding({x,z,w:7,d:7,h:3.4,wallMat,roofMat,roof:'#85766a',door:'n',doorW:2,floor:t.kind==='laden'?'#e8d4b0':'#d9c19a',floorTex:t.kind==='laden'?'tile':'planks',shutter:['#5b8f6b','#d86a6a','#6a9ac0','#e0a050'][(t.i||0)%4],wood:'#8a5a3a'});const bcols=colliders.slice(n0);
   const deco=new THREE.Group();outG.add(deco);
-  const forSale=new THREE.Group();const fb=new Batch();fb.bx(0.1,1.4,0.1,'#6a5238',0,0,0);fb.mesh(forSale);signPlane(t.kind==='neu'?'BAUPLATZ\nZu verkaufen':'ZU VERKAUFEN\n'+t.name,1.7,0.9,0,1.55,0.08,Math.PI,forSale,'#e8dcc0','#8a3a2a');forSale.position.set(x-2.6,0,z-5.2);outG.add(forSale);
+  const forSale=new THREE.Group();const fb=new Batch();fb.bx(0.09,1.14,0.09,'#6a5238',0,0,0);fb.mesh(forSale);signPlane(t.kind==='neu'?'BAUPLATZ\nFreies Grundstück':'ZU VERKAUFEN\n'+t.name,1.68,0.8,0,1.54,0,Math.PI,forSale,'#e8dcc0','#8a3a2a');forSale.position.set(x-2.6,0,z-5.2);outG.add(forSale);
   const emp=new THREE.Group();outG.add(emp);const eb=new Batch();eb.bx(2.5,0.2,0.07,'#7a5a3a',x,1.0,z-3.72,0,0.18);eb.bx(2.5,0.2,0.07,'#7a5a3a',x,1.4,z-3.72,0,-0.18);eb.mesh(emp);
   const ok=new THREE.Group();ok.visible=false;outG.add(ok);
   if(t.kind==='laden'){const aw=box(5.2,0.1,1.7,awningMat(t.aw),x,2.15,z-4.3,ok);aw.rotation.x=-0.32;const sb=new Batch();sb.bx(0.08,0.4,0.08,'#6a5238',x-2.5,1.7,z-3.55);sb.bx(0.08,0.4,0.08,'#6a5238',x+2.5,1.7,z-3.55);sb.mesh(ok);
    signPlane(t.sign,3.3,0.75,x,3.0,z-3.7,Math.PI,ok,'#fff3d8','#7a3b22');
    const kb=new Batch();if(t.id==='s1'){for(let i=0;i<3;i++)kb.ico(0.18,'#d9a054',x-2.0+i*0.5,0.95,z-3.9,1.4,0.7,1);kb.bx(1.4,0.1,0.5,'#8a5a3a',x-1.7,0.7,z-3.9);}
    if(t.id==='s3'){kb.cy(0.33,0.06,'#6a4a30',x+2.2,0.7,z-4.0,10);kb.cy(0.04,0.7,'#6a4a30',x+2.2,0,z-4.0,6);kb.cy(0.3,0.05,'#6a4a30',x+3.0,0.55,z-4.0,10);kb.cy(0.04,0.55,'#6a4a30',x+3.0,0,z-4.0,6);kb.cy(0.15,0.12,'#fff',x+2.2,0.76,z-4.0,8);}
-   if(t.special){const cc=t.special==='arzt'?'#3aa0c8':'#d9453a';kb.bx(0.12,2.4,0.12,'#6a5238',x+3.6,0,z-4.1);kb.bx(0.9,0.3,0.1,cc,x+3.6,2.1,z-4.1);kb.bx(0.3,0.9,0.1,cc,x+3.6,1.8,z-4.1);kb.bx(0.9,0.3,0.12,'#ffffff',x+3.6,2.1,z-4.1);kb.bx(0.3,0.9,0.12,'#ffffff',x+3.6,1.8,z-4.1);kb.bx(0.8,0.2,0.14,cc,x+3.6,2.15,z-4.1);kb.bx(0.2,0.8,0.14,cc,x+3.6,1.85,z-4.1);kb.bx(1.2,0.4,0.5,'#8a5a3a',x-2.6,0,z-4.0);for(let i=0;i<3;i++)kb.ico(0.18,['#ff8fa8','#ffd45a','#fff'][i],x-3.0+i*0.4,0.65,z-4.0);}
+   if(t.special){const cc=t.special==='arzt'?'#3aa0c8':'#d9453a';kb.bx(0.12,2.4,0.12,'#6a5238',x+3.6,0,z-4.1);kb.bx(0.9,0.3,0.1,cc,x+3.6,2.1,z-4.1);kb.bx(0.3,0.9,0.1,cc,x+3.6,1.8,z-4.1);kb.bx(0.9,0.3,0.12,'#ffffff',x+3.6,2.1,z-4.1);kb.bx(0.3,0.9,0.12,'#ffffff',x+3.6,1.8,z-4.1);kb.bx(0.8,0.2,0.14,cc,x+3.6,2.15,z-4.1);kb.bx(0.2,0.8,0.14,cc,x+3.6,1.85,z-4.1);addWindowPlanter(kb,x-2.6,0,z-4.0,1.15,0.44,7);}
    if(t.id==='s7'){kb.bx(1.4,0.1,0.6,'#8a5a3a',x+2.1,0.75,z-4.0);kb.bx(0.12,0.75,0.5,'#6a4a2e',x+1.5,0,z-4.0);kb.bx(0.12,0.75,0.5,'#6a4a2e',x+2.7,0,z-4.0);kb.cy(0.15,0.25,'#e0b030',x+2.0,0.85,z-4.0,8);kb.cy(0.15,0.25,'#e0b030',x+2.4,0.85,z-4.0,8);}
    kb.mesh(ok);}
   else if(t.kind==='haus')signPlane(t.name,2.0,0.5,x,2.95,z-3.7,Math.PI,ok,'#fff3d8','#7a3b22');
-  const pk=new Batch();for(let k=0;k<3;k++){pk.bx(0.9,0.3,0.4,'#8a5a3a',x-2.3+k*2.3,0.7,z-3.9);pk.bx(0.9,0.5,0.4,'#7a4a2a',x-2.3+k*2.3,0,z-3.9);for(let j=0;j<4;j++)pk.ico(0.15,['#ff8fa8','#ffd45a','#fff','#c8a0ff'][(j+k)%4],x-2.65+k*2.3+j*0.22,1.08,z-3.9,1,1,1);pk.ico(0.2,'#4aa04a',x-2.3+k*2.3,1.0,z-3.9,1.6,0.7,1);}
+  const pk=new Batch();for(let k=0;k<3;k++){if(k===1)continue;addWindowPlanter(pk,x-2.2+k*2.2,0,z-3.92,0.92,0.4,k+(t.i||0));}
   pk.mesh(ok);
   addCol(x-3.5,z-3.5,x+3.5,z+3.5,'x_dummy');colliders.pop();
   const sign=new THREE.Group();sign.position.set(x,0,z-4.2);outG.add(sign);
   const bb={t,x,z,b,deco,forSale,emp,ok,sign,lab:null,cols:bcols};W.bld.push(bb);
-  if(t.kind!=='neu'){envB.ico(0.75,'#5aae40',x-3.9,0.55,z-3.9,1.2,0.9,1);envB.ico(0.75,'#5aae40',x+3.9,0.55,z-3.9,1.2,0.9,1);envB.ico(0.3,'#ff8fa8',x+3.9,1.1,z-4.2,1,1,1);
+  if(t.kind!=='neu'){addPlanterPot(envB,x-3.85,0,z-3.9,(t.i||0)+1);addPlanterPot(envB,x+3.85,0,z-3.9,(t.i||0)+3);
    const pm=addMesh(new THREE.PlaneGeometry(1.7,2.3),texMat('cobble','#e9dcc0',1,1.4),x,0.045,z-3.5-1.35,outG,false);pm.rotation.x=-Math.PI/2;}
   if(t.kind==='neu'){
    b.g.visible=false;b.rg.visible=false;roofs.splice(roofs.indexOf(b.rg),1);const plot=box(7,0.15,7,'#c8b58a',x,0,z,outG);const st=new THREE.Group();for(let k=0;k<4;k++)box(0.15,1.2,0.15,'#a07a48',x-2.8+(k%2)*5.6,0,z-2.8+(k>>1)*5.6,st);outG.add(st);bb.plot=plot;bb.stakes=st;}
@@ -1013,14 +1118,14 @@ function buildVillage(){
  fb.cy(0.45,2.3,'#cfc8bc',0,0.6,0,8);fb.cy(0.9,0.2,'#d8d1c4',0,2.0,0,10);fb.sp(0.5,'#cfc8bc',0,3.0,0,1,0.8,1);fb.bx(0.1,0.8,0.1,'#6a5238',2.0,0.9,0);fb.mesh(fo);
  addMesh(new THREE.CylinderGeometry(2.15,2.15,0.1,16),new THREE.MeshStandardMaterial({color:'#6fc8e8',emissive:'#2a6a90',emissiveIntensity:0.35}),0,0.88,0,fo,false);
  fo.position.set(0,0,26);outG.add(fo);addCol(-2.9,23.1,2.9,28.9,'out');
- signPlane('DORFPLATZ',2.4,0.6,0,3.9,0,0,fo,'#fff3d8','#7a3b22');
+ const foSg=new THREE.Group();cyl(0.07,0.08,1.7,'#6a4a2e',0,0,0,foSg,8);signPlane('DORFPLATZ',1.9,0.54,0,1.97,0,Math.PI,foSg,'#fff3d8','#7a3b22');foSg.position.set(3.4,0,-2.6);fo.add(foSg);
  const ring=new THREE.Mesh(new THREE.CircleGeometry(6.8,28),texMat('cobble','#e9d8b4',4,4));ring.rotation.x=-Math.PI/2;ring.position.set(0,0.035,26);ring.receiveShadow=true;outG.add(ring);
  [[-5,26,0],[5,26,Math.PI],[0,32,Math.PI/2]].forEach(p=>{envB.frame(p[0],0,p[1],p[2]);envB.bx(1.9,0.12,0.55,'#a67c52',0,0.45,0);envB.bx(1.9,0.5,0.08,'#a67c52',0,0.6,-0.25);envB.bx(0.12,0.45,0.5,'#6a4a2e',-0.8,0,0);envB.bx(0.12,0.45,0.5,'#6a4a2e',0.8,0,0);envB.reset();});
- [[-5.7,22.3],[5.7,22.3],[-6.2,30],[6.2,30]].forEach(p=>{envB.cy(0.32,0.5,'#c07050',p[0],0,p[1],8);envB.ico(0.5,'#58b058',p[0],0.9,p[1],1,1.1,1);envB.ico(0.18,'#ff8fa8',p[0]+0.25,1.3,p[1],1,1,1);envB.ico(0.18,'#ffd45a',p[0]-0.25,1.2,p[1]+0.1,1,1,1);});
+ [[-5.7,22.3],[5.7,22.3],[-6.2,30],[6.2,30]].forEach((p,i)=>addPlanterPot(envB,p[0],0,p[1],i+10));
  // Schwarzes Brett
- const bd=new THREE.Group();const dbb=new Batch();dbb.bx(0.15,2.4,0.15,'#6a5238',-1.0,0,0);dbb.bx(0.15,2.4,0.15,'#6a5238',1.0,0,0);dbb.bx(2.4,1.3,0.12,'#c9a877',0,0.9,0);dbb.bx(2.5,0.12,0.2,'#8a5a3a',0,2.3,0);
- [['#fff',-0.7,1.4,0.05],['#ffe9a0',0.0,1.7,-0.04],['#cfe8ff',0.65,1.35,0.06],['#ffd0d0',-0.2,1.15,-0.03]].forEach(n=>dbb.bx(0.5,0.6,0.02,n[0],n[1],n[2],0.1,n[3]));dbb.mesh(bd);
- signPlane('SCHWARZES BRETT\nBewerber:innen · Jobs',2.3,0.8,0,2.75,0.12,0,bd,'#fff3d8','#5a3a22');
+ const bd=new THREE.Group();const dbb=new Batch();dbb.bx(0.14,2.85,0.14,'#5c3d22',-1.18,0,0);dbb.bx(0.14,2.85,0.14,'#5c3d22',1.18,0,0);dbb.bx(2.3,1.25,0.1,'#c9a877',0,0.88,0);dbb.bx(2.6,0.14,0.32,'#4e321a',0,2.85,0);
+ [['#fff',-0.7,1.35,0.05],['#ffe9a0',0.0,1.62,-0.04],['#cfe8ff',0.65,1.3,0.06],['#ffd0d0',-0.2,1.12,-0.03]].forEach(n=>dbb.bx(0.48,0.55,0.02,n[0],n[1],n[2],0.07,n[3]));dbb.mesh(bd);
+ signPlane('SCHWARZES BRETT\nStellen & Dorfgesuche',2.2,0.64,0,2.48,0.06,0,bd,'#fff3d8','#5a3a22');
  bd.position.set(-8,0,23);outG.add(bd);W.board=bd;addCol(-9.2,22.7,-6.8,23.3,'out');
 }
 
@@ -1048,7 +1153,7 @@ function buildTrafik(){
  const aw=box(6.4,0.1,1.8,awningMat('#d9453a'),0,2.2,z-4.55,W.tfront);aw.rotation.x=-0.3;
  signPlane('TRAFIK',4.2,1.0,0,3.05,z-3.75,Math.PI,W.tfront,'#fff3d8','#b5232a');
  signPlane('Tabak · Zeitungen · Lotto',3.2,0.5,0,2.55,z-3.75,Math.PI,W.tfront,'#2f3f2f','#fff3d8');
- const tb=new Batch();for(let k=0;k<3;k++){tb.cy(0.28,0.4,'#c07050',-3.4+k*0.8,0,z-4.2,8);tb.ico(0.35,['#58b058','#4aa04a','#6cc068'][k],-3.4+k*0.8,0.7,z-4.2,1,1,1);}
+ const tb=new Batch();addWindowPlanter(tb,-2.6,0,z-4.2,1.75,0.44,12);
  tb.bx(0.1,0.8,0.1,'#6a4a2e',3.2,0,z-4.4);tb.bx(0.8,0.5,0.06,'#fff8e0',3.2,0.8,z-4.4);tb.bx(0.8,0.5,0.06,'#fff8e0',3.2,0.8,z-4.4,0.2);
  tb.mesh(W.tfront);
  // Regale: Metall-Gondelregale mit Lochrückwand, Preisleisten und einzeln sichtbaren Waren
@@ -1085,9 +1190,9 @@ function buildTrafik(){
  ct.position.set(3.4,0,z);outG.add(ct);addCol(2.9,z-1.4,3.9,z+1.4,'out');W.counter=ct;
  // Preistafel
  const pt=new THREE.Group();const ptb=new Batch();ptb.bx(2.2,1.4,0.12,'#3a4a3a',0,0.9,0);ptb.bx(2.3,0.1,0.16,'#8a5a3a',0,2.3,0);ptb.bx(2.3,0.1,0.16,'#8a5a3a',0,0.85,0);ptb.cy(0.06,0.9,'#5a4a3a',-0.8,0,0,5);ptb.cy(0.06,0.9,'#5a4a3a',0.8,0,0,5);ptb.mesh(pt);
- signPlane('PREISE & REZEPTE\nE: Preise einstellen',2.0,1.2,0,1.6,0.08,0,pt,'#2f3f2f','#fff3d8');pt.position.set(-4.0,0,z+0.1);pt.rotation.y=Math.PI/2;outG.add(pt);W.preis=pt;addCol(-4.3,z-1.1,-3.7,z+1.1,'out');
+ signPlane('SORTIMENT & PREISE\nFeine Rezeptur & Tarife',2.0,1.15,0,1.6,0.08,0,pt,'#2f3f2f','#fff3d8');pt.position.set(-4.0,0,z+0.1);pt.rotation.y=Math.PI/2;outG.add(pt);W.preis=pt;addCol(-4.3,z-1.1,-3.7,z+1.1,'out');
  // Zeitungsständer, Lotto-Tafel, Deckenlampen
- const zb=new Batch();zb.bx(1.0,1.4,0.35,'#7a4a2e',3.7,0,z-2.9);for(let i=0;i<4;i++)zb.bx(0.85,0.25,0.06,['#fff','#ffe9a0','#cfe8ff','#ffd0d0'][i],3.7,0.2+i*0.3,z-3.05,0,0,-0.2);zb.bx(0.5,0.9,0.5,'#5a4a3a',-3.6,0,z-2.9);for(let i=0;i<3;i++)zb.ico(0.2,['#ff8fa8','#ffd45a','#c8a0ff'][i],-3.6+(i-1)*0.15,1.0+i*0.05,z-2.9,1,1,1);zb.mesh(outG);
+ const zb=new Batch();zb.bx(1.0,1.4,0.35,'#7a4a2e',3.7,0,z-2.9);for(let i=0;i<4;i++)zb.bx(0.85,0.25,0.06,['#fff','#ffe9a0','#cfe8ff','#ffd0d0'][i],3.7,0.2+i*0.3,z-3.05,0,0,-0.2);addPlanterPot(zb,-3.6,0,z-2.9,15);zb.mesh(outG);
  signPlane('ZEITUNGEN',1.3,0.4,3.7,1.8,z-2.9,0,outG,'#fff3d8','#7a3b22');
  signPlane('LOTTO · TOTO',1.5,0.45,4.3,2.1,z+1.0,-Math.PI/2,outG,'#ffe9a0','#b5232a');
  for(const lx of[-2,2]){const lg=new THREE.Group();lg.position.set(lx,3.4,z);outG.add(lg);const bb=new Batch();bb.as('metal');for(const dz of[-0.8,0.8])bb.cy(0.005,0.5,'#9aa0a8',0,-0.5,dz,4);bb.bx(0.5,0.06,1.9,'#e3e5e8',0,-0.56,0);bb.bx(0.54,0.025,1.94,'#c4c9cf',0,-0.52,0);bb.as(null);bb.mesh(lg,undefined,false);stripLight(lg,0,-0.565,0,0.42,1.8);}
@@ -1103,7 +1208,7 @@ function buildCellar(){
  rebuildCellar();
  const st=new THREE.Group();for(let i=0;i<6;i++)box(1.6,3.2-i*0.5,0.5,texMat('planks','#c9996a',1,1),0,CEL_Y,-1.25+i*0.5,st);
  const sb=new Batch();sb.bx(0.08,1.2,3.2,'#6a4a2e',-0.85,CEL_Y+0.5,0);sb.bx(0.08,1.2,3.2,'#6a4a2e',0.85,CEL_Y+0.5,0);sb.mesh(st);
- signPlane('TREPPE\nE: hinauf in die Halle',1.8,0.7,0,CEL_Y+3.5,1.6,0,st);
+ signPlane('AUFGANG\nHinauf in die Werkhalle',1.8,0.68,0,CEL_Y+3.5,1.6,0,st);
  st.position.set(14,0,-10.5);celG.add(st);W.celExit=st;addCol(13.1,-12,14.9,-9,'cel');
  celG.visible=false;
 }
@@ -1137,18 +1242,18 @@ function rebuildCellar(){
  const crate=(x,z,y,c)=>{b.bx(0.8,0.5,0.8,c||'#b88a50',x,Y+y,z);b.bx(0.84,0.08,0.84,'#8a6238',x,Y+y+0.46,z);};
  for(let i=0;i<3;i++){crate(x1+1.0,z2-1.0-i*0.9,0);if(i<2)crate(x1+1.0,z2-1.0-i*0.9,0.5,'#c9a060');}
  b.bx(0.5,2.0,2.4,'#7a5230',x1+0.55,Y,z1+6.3-2.4+2.4);for(let r=0;r<4;r++)for(let c=0;c<5;c++)b.cyc(0.09,0.5,['#3a6a3a','#6a2a3a','#c9a050'][(r+c)%3],x1+0.62,Y+0.35+r*0.45,z1+4.8+c*0.45,6,0,0,Math.PI/2);
- const plant=(x,z)=>{b.cy(0.3,0.5,'#c07050',x,Y,z,8);b.cy(0.33,0.08,'#a85a3a',x,Y+0.5,z,8);b.ico(0.5,'#4aa04a',x,Y+0.95,z,1,1.1,1);b.ico(0.3,'#6cc068',x+0.2,Y+1.3,z+0.1);};
+ const plant=(x,z)=>addPlanterPot(b,x,Y,z,18,true);
  plant(x2-0.9,z2-0.9);plant(x1+0.9,z1+0.9<-9?z1+3.5:z1+0.9);
  b.bx(1.6,0.03,2.6,'#b05a5a',14,Y,-7.6);b.bx(1.2,0.04,2.2,'#e8c9a0',14,Y,-7.6);b.cyc(1.4,0.04,'#7a9ac0',cx+2,Y+0.02,cz,18);b.cyc(1.0,0.05,'#e8c9a0',cx+2,Y+0.03,cz,18);
  b.mesh(g);
  // Wandschilder & Lichterkette
- signPlane('PRODUKTIONSKELLER',3.6,0.7,(x1+x2)/2,Y+2.6,z2-0.42,Math.PI,g,'#fff3d8','#7a3b22');
- signPlane('Hier stellst du deine\nMaschinen auf',2.6,0.8,x1+0.42,Y+2.2,cz-3,Math.PI/2,g,'#fff3d8','#5a3a22');
+ signPlane('GEWÖLBEKELLER · MANUFAKTUR',3.8,0.68,(x1+x2)/2,Y+2.6,z2-0.42,Math.PI,g,'#fff3d8','#7a3b22');
+ signPlane('Werkraum\nStellfläche für Geräte',2.4,0.74,x1+0.42,Y+2.2,cz-3,Math.PI/2,g,'#fff3d8','#5a3a22');
  const nb=Math.floor(w/1.1),sg=new THREE.InstancedMesh(new THREE.SphereGeometry(0.07,6,5),new THREE.MeshBasicMaterial({color:'#ffffff'}),nb*2),dm=new THREE.Object3D(),lc=['#ffd45a','#ff9a6a','#fff0c0','#ffb0d0'];
  for(let i=0;i<nb;i++){const x=x1+0.8+i*(w-1.6)/Math.max(1,nb-1),sag=Math.sin(((x-x1)%4)/4*Math.PI)*0.35;[z1+0.45,z2-0.45].forEach((zz,k)=>{dm.position.set(x,Y+H-0.5-sag,zz);dm.updateMatrix();sg.setMatrixAt(i*2+k,dm.matrix);sg.setColorAt(i*2+k,new THREE.Color(lc[(i+k)%4]));});}
  g.add(sg);
  W.celRectNow=[x1,z1,x2,z2];
- if(S.w.lvl<3)signPlane('Hier geht es weiter …\n(Keller ausbauen: Werkbank hier im Keller)',2.4,0.9,x2-0.45,Y+2.2,cz,-Math.PI/2,g);
+ if(S.w.lvl<3)signPlane('Kellergewölbe\nErweiterung an der Werkbank',2.4,0.8,x2-0.45,Y+2.2,cz,-Math.PI/2,g);
 }
 
 function zoneOf(L,x,z,w,d){
@@ -1739,20 +1844,20 @@ function registerWorld(){
  W.trees.forEach(t=>addInter({obj:t.g,L:'out',name:()=>'Baum',desc:()=>'Liefert Holz für Renovierungen und die Papiermühle.',hint:()=>'E: Baum fällen (3 Hiebe)',act:()=>treeAct(t),aim:1.3,show:()=>!S.w.trees[t.id]}));
  addInter({obj:W.rohlager,L:'out',name:()=>'Rohlager (Tabakblätter)',rid:'store:leaf',desc:()=>'Lager für geernteten Rohtabak. Maschinen und Träger holen ihn von hier.',hint:()=>S.w.stock.leaf+' Rohtabak im Lager'+(S.w.carry&&S.w.carry.id==='leaf'?'  ·  E: einlagern':(S.w.stock.leaf>0?'  ·  E: mitnehmen':'')),act:()=>storeAct('leaf'),aim:1.5});
  addInter({obj:W.holz,L:'out',name:()=>'Holzstapel',rid:'store:log',desc:()=>'Hier lagert das Holz aus deinem Wald (für Renovierungen und Papier).',hint:()=>S.w.stock.log+' Holz im Lager'+(S.w.carry&&S.w.carry.id==='log'?'  ·  E: ablegen':(S.w.stock.log>0?'  ·  E: mitnehmen':'')),act:()=>storeAct('log'),aim:1.5});
- addInter({obj:W.lieferbox,L:'cel',name:()=>'Lieferbox (Großhandel, im Keller)',rid:'deliv',desc:()=>'Hier im Keller bestellst du Rohstoffe in Kisten und verkaufst Öl.',hint:()=>'E: Großhandel öffnen',act:openDelivery,aim:1.4});
- addInter({obj:W.werkbank,L:'cel',name:()=>'Werkbank (im Keller)',desc:()=>'Kaufe Maschinen, PV-Module und baue den Keller aus.',hint:()=>'E: Werkbank öffnen',act:openWorkbench,aim:1.6});
- addInter({obj:W.desk,L:'out',name:()=>'Finanzamt-Schreibtisch',desc:()=>'Steuern, Rechnungen und Jahresabschluss. Alles ohne Strafen.',hint:()=>'E: Steuern & Rechnungen öffnen'+(S.bills.length?'  ·  '+S.bills.length+' offen':''),act:openTax,aim:1.6});
- addInter({obj:W.pc,L:'out',name:()=>'Forschungs-Computer',desc:()=>'Forschungspunkte (FP) gegen neue Maschinen und Verbesserungen tauschen.',hint:()=>'E: Forschung öffnen',act:openResearch,aim:1.5});
+ addInter({obj:W.lieferbox,L:'cel',name:()=>'Warenannahme · Großhandel',rid:'deliv',desc:()=>'Bestelle Rohstoffe in Kisten oder verkaufe überschüssige Ölfässer.',hint:()=>'E: Großhandel öffnen',act:openDelivery,aim:1.4});
+ addInter({obj:W.werkbank,L:'cel',name:()=>'Werkbank',desc:()=>'Geräte, Sonnenstrom-Anlagen und Ausbau des Gewölbekellers.',hint:()=>'E: Werkbank öffnen',act:openWorkbench,aim:1.6});
+ addInter({obj:W.desk,L:'out',name:()=>'Kassenbuch & Buchhaltung',desc:()=>'Rechnungen, Steuern und Jahresabschluss in Ruhe erledigen.',hint:()=>'E: Kassenbuch öffnen'+(S.bills.length?'  ·  '+S.bills.length+' offen':''),act:openTax,aim:1.6});
+ addInter({obj:W.pc,L:'out',name:()=>'Tüftler-Ecke',desc:()=>'Neue Produktlinien, Rezepturen und Verbesserungen freischalten.',hint:()=>'E: Tüftler-Ecke öffnen',act:openResearch,aim:1.5});
  addInter({obj:W.hatch,L:'out',name:()=>'Kellerluke',desc:()=>'Führt in den großen Produktionskeller unter der Halle.',hint:()=>'E: in den Keller steigen',act:goDown,aim:1.5,show:()=>true});
  addInter({obj:W.celExit,L:'cel',name:()=>'Treppe nach oben',desc:()=>'Zurück in die Lagerhalle.',hint:()=>'E: hinauf in die Halle',act:goUp,aim:1.6,reach:3.5});
- addInter({obj:W.ladder,L:'out',name:()=>'Dachleiter',desc:()=>'Zum Hallendach: Dort werden die PV-Module (Photovoltaik = Solarstrom) montiert.',hint:()=>S.w.carry&&S.w.carry.kind==='pv'?'E: PV-Module aufs Dach montieren':S.w.pv+' von 12 PV-Modulen montiert  ·  Module kaufst du an der Werkbank im Keller',act:mountPV,aim:1.6});
+ addInter({obj:W.ladder,L:'out',name:()=>'Dachleiter',desc:()=>'Aufstieg zum Hallendach für die Sonnenstrom-Module.',hint:()=>S.w.carry&&S.w.carry.kind==='pv'?'E: Module aufs Dach montieren':S.w.pv+' von 12 Modulen auf dem Dach',act:mountPV,aim:1.6});
  addInter({obj:W.well,L:'out',name:()=>'Ölquelle',desc:()=>'Liefert Ölfässer für Generatoren. Überschüssiges Öl kannst du verkaufen.',hint:wellHint,act:wellAct,aim:2});
  addInter({obj:W.board,L:'out',name:()=>'Schwarzes Brett',desc:()=>'Bewerber:innen aus dem Dorf ansehen und als Mitarbeiter:innen anstellen.',hint:()=>'E: Bewerbungen ansehen ('+S.w.apps.length+')',act:openBoard,aim:1.6});
  W.shelves.forEach((sh,i)=>addInter({obj:sh.g,L:'out',name:()=>sh.p.name+'-Regal',rid:'shelf:'+sh.p.id,desc:()=>'Verkaufsregal der Trafik. Was hier steht, kaufen die Kunden.',hint:()=>shelfHint(sh.p),act:()=>shelfAct(sh.p),aim:1.2,show:()=>true}));
  addInter({obj:W.counter,L:'out',name:()=>'Kassa',desc:()=>'Hier bezahlen die Kunden. Mit einer Verkäuferin geht es automatisch.',hint:()=>{const c=customers.find(c=>c.state==='wait');return c?'E: kassieren ('+eur(c.q*S.price[c.p.id])+')':'Gerade wartet niemand an der Kassa';},act:()=>{const c=customers.find(c=>c.state==='wait');if(c)serve(c,'hand');else toast('Gerade wartet niemand an der Kassa.');},aim:1.5});
  addInter({obj:W.preis,L:'out',name:()=>'Preistafel',desc:()=>'Verkaufspreise und Qualität (Rezept) deiner Produkte einstellen.',hint:()=>'E: Preise & Rezepte öffnen',act:openPrices,aim:1.5});
  W.bld.forEach(bb=>{const t=bb.t;addInter({obj:bb.sign,L:'out',name:()=>t.name+(t.kind==='neu'?' (Bauplatz)':' (leer)'),desc:()=>t.kind==='neu'?'Ein freier Bauplatz. Mit Geld und Holz entsteht ein neues Haus, Bewohner ziehen ein.':t.special==='arzt'?'Die Praxis ist verfallen. Renoviert zieht eine Ärztin ein: +4 % Kundschaft und neue Bewohner.':t.special==='apo'?'Die Apotheke ist verfallen. Renoviert zieht ein Apotheker ein: +1 Tragekapazität, +4 % Kundschaft.':'Leerstehend. Renovieren kostet Geld und Holz, danach ziehen neue Bewohner ein.',show:()=>!S.w.reno[t.id],aim:3,reach:6,big:2,near:4,hint:()=>{const have=(S.w.carry&&S.w.carry.id==='log'?S.w.carry.n:0)+S.w.stock.log;return 'E: '+(t.kind==='neu'?'Haus bauen':'renovieren')+' – '+eur(t.cost*1.2)+' + '+t.logs+' Holz (du hast '+have+')';},act:()=>bldAct(bb)});
-  const mk=addMesh(new THREE.BoxGeometry(2.4,2.8,0.4),new THREE.MeshBasicMaterial({visible:false}),0,1.4,-0.3,bb.sign,false);});
+  const mk=addMesh(new THREE.BoxGeometry(6.2,3.0,1.6),new THREE.MeshBasicMaterial({visible:false}),-0.6,1.5,-0.5,bb.sign,false);});
  W.furnSpots.forEach(f=>{addInter({obj:f.g,L:'out',name:()=>f.name,aim:1.2,desc:()=>'Möbel für dein Bauernhaus. Macht das Zuhause gemütlicher.',hint:()=>{if(S.w.furn[f.id])return f.id==='bett'?'E: schlafen (Nacht überspringen)':f.id==='sofa'?'E: gemütlich hinsetzen':f.id==='kamin'?'Der Kamin knistert.':f.name+' – gemütlich';return 'E: '+f.name+' kaufen ('+eur(f.price*1.2)+')';},
   act:()=>{if(!S.w.furn[f.id]){if(spend(f.price,'invest')){S.w.furn[f.id]=true;refreshFurn();toast(f.name+' eingerichtet. Das Haus wird gemütlicher.');}else toast('Die Kassa reicht dafür gerade nicht.');return;}
    if(f.id==='bett'){sleepNight();}else if(f.id==='sofa'){toast('Du lässt dich ins Sofa sinken … ahh, genau so soll es sein.');}else toast('Gemütlich.');}});});
@@ -1838,9 +1943,10 @@ function migrateWB(){
 let dlgRefresh=null,dlgOpen=false,photo=false;
 function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;$('toasts').appendChild(t);log(m,true);setTimeout(()=>{t.style.opacity=0;},4200);setTimeout(()=>t.remove(),5000);while($('toasts').children.length>5)$('toasts').firstChild.remove();}
 function openDlg(title,html,refresh,wide){
- $('dlgTitle').textContent=title;$('dlgBody').innerHTML=html;$('dlg').style.display='flex';$('dlgBox').style.maxWidth=wide?'820px':'640px';dlgOpen=true;Ctl.uiOpen=true;dlgRefresh=refresh||null;Ctl.releaseLock&&Ctl.releaseLock();
+ if($('dlgClose'))$('dlgClose').style.display='';
+ $('dlgTitle').textContent=title;$('dlgBody').innerHTML=html;$('dlg').style.display='flex';$('dlgBox').style.maxWidth=wide?'820px':'620px';dlgOpen=true;Ctl.uiOpen=true;dlgRefresh=refresh||null;Ctl.releaseLock&&Ctl.releaseLock();
 }
-function closeDlg(){$('dlg').style.display='none';dlgOpen=false;Ctl.uiOpen=false;dlgRefresh=null;saveState();if(typeof started!=='undefined'&&started&&Ctl.requestLock&&!photo)Ctl.requestLock();}
+function closeDlg(){if($('dlgClose'))$('dlgClose').style.display='';$('dlg').style.display='none';dlgOpen=false;Ctl.uiOpen=false;dlgRefresh=null;saveState();if(typeof started!=='undefined'&&started&&Ctl.requestLock&&!photo)Ctl.requestLock();}
 function bindDlg(sel,fn){document.querySelectorAll('#dlgBody '+sel).forEach(b=>b.onclick=()=>fn(b));}
 function rerender(f){const sc=$('dlgBody').scrollTop;f();$('dlgBody').scrollTop=sc;}
 const g2=(n)=>eur(n*1.2);
@@ -1869,15 +1975,15 @@ function openTax(){
   bindDlg('[data-ta]',b=>{const a=b.dataset.ta;if(a==='payall')payAll();else if(a==='later'){S.audit=null;toast('Die Prüferin meldet sich irgendwann – kein Stress.');}
    else{S.audit=null;if(Math.random()<0.7){S.rep+=2;toast('Betriebsprüfung: alles bestens! (+2 Ruf)');}else{const g=20+Math.round(Math.random()*40);S.ustCredit+=g;toast('Kleine Rundungsdifferenz zu deinen Gunsten: '+eur(g)+'.');}}rerender(render);});
  };
- openDlg('Finanzamt – dein Schreibtisch','',()=>{if(!document.activeElement||document.activeElement.tagName!=='SELECT')rerender(render);});render();
+ openDlg('Kassenbuch & Steuern','',()=>{if(!document.activeElement||document.activeElement.tagName!=='SELECT')rerender(render);});render();
 }
 // --- Forschung ---
 function openResearch(){
- const render=()=>{let h='<div class="hint">Forschungspunkte: <b>'+fmt(S.rp,1)+'</b> · '+fmt(rpRate(),2)+' pro Sekunde. Mehr Forschungs-PCs (Werkbank im Keller) beschleunigen das.</div><div style="margin-top:8px"></div>';
+ const render=()=>{let h='<div class="hint">Forschungspunkte: <b>'+fmt(S.rp,1)+'</b> · '+fmt(rpRate(),2)+' pro Sekunde. Weitere Studierplätze (Werkbank im Keller) beschleunigen das.</div><div style="margin-top:8px"></div>';
   TECHS.forEach(t=>{const done=S.techs[t.id],av=!t.req||S.techs[t.req];h+='<div class="tech '+(done?'done':av?'':'locked')+'"><b>'+t.name+'</b><p>'+t.desc+'</p>'+(done?'<span class="hint">✔ erforscht</span>':av?'<button data-t="'+t.id+'"'+(S.rp<t.cost?' disabled':'')+'>Erforschen ('+t.cost+' FP)</button>':'<span class="hint">Benötigt: '+TMAP[t.req].name+'</span>')+'</div>';});
   $('dlgBody').innerHTML=h;
-  bindDlg('[data-t]',b=>{const t=TMAP[b.dataset.t];if(S.rp>=t.cost&&!S.techs[t.id]){S.rp-=t.cost;S.techs[t.id]=true;if(t.unlock)S.unlocked[t.unlock]=true;toast('Neu erforscht: '+t.name+' – '+t.desc);S.goals.research=true;rerender(render);}});};
- openDlg('Forschungs-Computer','',()=>rerender(render),true);render();
+  bindDlg('[data-t]',b=>{const t=TMAP[b.dataset.t];if(S.rp>=t.cost&&!S.techs[t.id]){S.rp-=t.cost;S.techs[t.id]=true;if(t.unlock)S.unlocked[t.unlock]=true;toast('Neu entdeckt: '+t.name+' – '+t.desc);S.goals.research=true;rerender(render);}});};
+ openDlg('Tüftler-Ecke & Rezepte','',()=>rerender(render),true);render();
 }
 // --- Werkbank ---
 function openWorkbench(){
@@ -1888,29 +1994,28 @@ function openWorkbench(){
   groups.forEach(([n,p])=>{if(!S.unlocked[p])return;h+='<div class="hint"><b>'+n+'</b></div>';STEPS[p].forEach(t=>{h+=row(t);});});
   h+='<div class="hint"><b>Sonstiges</b></div>';['uv','papier','gen','battery','lab','hub'].forEach(t=>{if(avail(t))h+=row(t);else{const T=MT[t];h+='<div class="tech locked"><b>'+T.n+'</b><p>Erst erforschen: '+TMAP[T.tech].name+'</p></div>';}});
   h+='<h3>Strom &amp; Ausbau</h3>';
-  h+='<div class="tech"><b>PV-Modul (auf das Hallendach)</b><p>+2,2 kW bei Sonne. Aufs Dach: Leiter an der Ostseite der Halle. Auf dem Dach: '+S.w.pv+'/12.</p><span class="hint">'+g2(420)+'</span> <button data-pv="1">1× kaufen</button><button data-pv="4">4× kaufen</button></div>';
-  if(S.w.lvl<3){const pr=CEL_PRICE[S.w.lvl];h+='<div class="tech"><b>Keller erweitern (Stufe '+(S.w.lvl+1)+' von 3)</b><p>Mehr Platz für Produktion unter der Halle: +Fläche.</p><span class="hint">'+g2(pr)+'</span> <button data-cel="1">Ausbauen</button></div>';}
-  else h+='<div class="tech done"><b>Keller</b><p>Voll ausgebaut. ✔</p></div>';
+  h+='<div class="tech"><b>PV-Modul (auf das Hallendach)</b><p>+2,2 kW bei Sonne. Aufs Dach geht es über die Leiter an der Ostseite der Halle. Auf dem Dach: '+S.w.pv+'/12.</p><span class="hint">'+g2(420)+'</span> <button data-pv="1">1× kaufen</button><button data-pv="4">4× kaufen</button></div>';
+  if(S.w.lvl<3){const pr=CEL_PRICE[S.w.lvl];h+='<div class="tech"><b>Kellergewölbe erweitern (Stufe '+(S.w.lvl+1)+' von 3)</b><p>Mehr Platz für deine Manufaktur unter der Halle.</p><span class="hint">'+g2(pr)+'</span> <button data-cel="1">Ausbauen</button></div>';}
+  else h+='<div class="tech done"><b>Kellergewölbe</b><p>Voll ausgebaut. ✔</p></div>';
   $('dlgBody').innerHTML=h;
   bindDlg('[data-m]',b=>{const t=b.dataset.m,n=parseInt(b.dataset.n,10);buyMachine(t,n);rerender(render);});
   bindDlg('[data-pv]',b=>{const n=parseInt(b.dataset.pv,10);buyPV(n);rerender(render);});
-  bindDlg('[data-cel]',()=>{const pr=CEL_PRICE[S.w.lvl];if(spend(pr,'invest')){S.w.lvl++;rebuildCellar();toast('Der Keller wurde erweitert – mehr Platz zum Bauen!');S.goals.cellar=true;}else toast('Dafür reicht die Kassa gerade nicht.');rerender(render);});
+  bindDlg('[data-cel]',()=>{const pr=CEL_PRICE[S.w.lvl];if(spend(pr,'invest')){S.w.lvl++;rebuildCellar();toast('Das Kellergewölbe wurde erweitert – mehr Platz zum Bauen!');S.goals.cellar=true;}else toast('Dafür reicht die Kassa gerade nicht.');rerender(render);});
  };
  const row=t=>{const T=MT[t],pr=machPrice(t);return '<div class="tech"><b>'+T.n+'</b><p>'+T.desc+(T.in?' ('+itemName(T.in)+' → '+(T.out?itemName(T.out):'')+', '+T.t+' s je Charge)':'')+(T.kw?' · '+T.kw+' kW':'')+'</p><span class="hint">'+g2(pr)+'</span> <button data-m="'+t+'" data-n="1">1× kaufen</button><button data-m="'+t+'" data-n="2">2×</button></div>';};
- openDlg('Werkbank','',()=>0,true);render();
+ openDlg('Großvaters Werkbank','',()=>0,true);render();
 }
 function buyMachine(t,n){
  const c=S.w.carry;if(c&&!(c.kind==='machine'&&c.type===t)){toast('Deine Hände sind voll – stell zuerst etwas ab.');return;}
  let bought=0;for(let i=0;i<n;i++){const pr=machPrice(t);if(!canSpend(pr))break;if((c?c.n:0)+bought>=4)break;spend(pr,'invest');bought++;S.w.mach.length;}
  if(!bought){toast('Dafür reicht die Kassa gerade nicht.');return;}
- // Preissteigerung berücksichtigt nur platzierte Maschinen
- if(c)c.n+=bought;else S.w.carry={kind:'machine',type:t,n:bought};updateCarryVis();toast(bought+'× '+MT[t].n+' gekauft – du hast sie in der Hand. Schließe das Fenster und stell sie auf (Klick/E).');closeDlg();
+ if(c)c.n+=bought;else S.w.carry={kind:'machine',type:t,n:bought};updateCarryVis();toast(bought+'× '+MT[t].n+' gekauft – stell sie auf einem freien Platz auf.');closeDlg();
 }
 function buyPV(n){const c=S.w.carry;if(c&&c.kind!=='pv'){toast('Hände frei machen.');return;}let b=0;for(let i=0;i<n;i++){if(!canSpend(420)||(c?c.n:0)+b>=4)break;spend(420,'invest');b++;}
  if(!b){toast('Dafür reicht die Kassa gerade nicht.');return;}if(c)c.n+=b;else S.w.carry={kind:'pv',n:b};updateCarryVis();toast(b+'× PV-Modul gekauft. Bring sie zur Dachleiter.');closeDlg();}
 // --- Lieferbox ---
 function openDelivery(){
- const render=()=>{let h='<div class="hint">Großhandel liefert Rohstoffe in Kisten (1 Kiste = '+CH+' Stück). Preis netto + 20 % USt. Rohtabak wächst auch auf deinem Feld und in UV-Beeten.</div>';
+ const render=()=>{let h='<div class="hint">Der Großhandel liefert Rohstoffe in Holzkisten (1 Kiste = '+CH+' Stück). Preis netto + 20 % USt. Rohtabak wächst auch auf deinem Feld hinter dem Bauernhof.</div>';
   PRODUCTS.forEach(p=>{if(!S.unlocked[p.id])return;const pr=matCost(p)*CH;h+='<div class="tech"><b>'+itemName(p.rawItem)+'</b> <span class="hint">für '+p.name+' · '+g2(pr)+' je Kiste</span><br><button data-r="'+p.id+'" data-n="1">1 Kiste</button><button data-r="'+p.id+'" data-n="'+carryCap()+'">Hand voll ('+carryCap()+')</button></div>';});
   const c=S.w.carry;
   if(c&&c.kind==='item'&&c.id==='oil')h+='<div class="tech"><b>Öl verkaufen</b><p>Der Händler zahlt '+eur(40)+' netto je Fass.</p><button data-oil="1">'+c.n+' Fässer verkaufen</button></div>';
@@ -1920,11 +2025,11 @@ function openDelivery(){
    let k=0;for(let i=0;i<n;i++){if((S.w.carry?S.w.carry.n:0)>=carryCap())break;if(!spend(matCost(p)*CH,'mat')){toast('Kassa zu knapp.');break;}giveCarry(p.rawItem,1);k++;}if(k)toast(k+' Kisten '+itemName(p.rawItem)+' geliefert.');rerender(render);});
   bindDlg('[data-oil]',()=>{const c=S.w.carry;earnNet(c.n*40);toast(c.n+' Fässer verkauft: '+eur(c.n*40*1.2)+'.');S.w.carry=null;updateCarryVis();rerender(render);});
   bindDlg('[data-gift]',()=>{giftTry(true);rerender(render);});};
- openDlg('Großhandel – Lieferbox','',()=>0);render();
+ openDlg('Warenannahme & Großhandel','',()=>0);render();
 }
 // --- Preistafel ---
 function openPrices(){
- const render=()=>{let h='<div class="hint">Preise sind brutto (Kleinverkaufspreis). In echt ist er gesetzlich fix; hier darfst du leicht anpassen.</div>';
+ const render=()=>{let h='<div class="hint">Preise sind brutto (Kleinverkaufspreis). In Österreich ist er im echten Leben gesetzlich fix; hier darfst du ihn fein abstimmen.</div>';
   PRODUCTS.forEach(p=>{if(!S.unlocked[p.id])return;const bd=breakdown(p);
    h+='<div class="prod"><h3>'+p.name+' <span class="hint">– je '+p.unit+'</span></h3><table class="bd"><tbody><tr><td>Verkaufspreis (brutto)</td><td>'+eur(bd.price)+'</td></tr><tr><td>− Umsatzsteuer 20 %</td><td>'+eur(bd.vat)+'</td></tr><tr><td>− Tabaksteuer</td><td>'+eur(bd.tax)+'</td></tr><tr><td>− Trafikanten-Spanne</td><td>'+eur(bd.sp)+'</td></tr><tr><td>= Ertrag Hersteller</td><td>'+eur(bd.hr)+'</td></tr><tr><td>− Herstellkosten (netto)</td><td>'+eur(bd.cost)+'</td></tr><tr class="t"><td>Gewinn je Stück (vor Ertragsteuer)</td><td>'+eur(bd.profit)+'</td></tr></tbody></table>'+
    '<label class="sl">Preis: <b>'+eur(S.price[p.id])+'</b> (Referenz '+eur(p.ref)+')</label><input type="range" data-k="price" data-p="'+p.id+'" min="'+(p.ref*0.8).toFixed(2)+'" max="'+(p.ref*1.3).toFixed(2)+'" step="0.05" value="'+S.price[p.id]+'">'+
@@ -1932,12 +2037,12 @@ function openPrices(){
    '<div class="hint">Nachfrage: '+fmt(demand(p),2)+' Stück/s · Rohstoffe je Stück: '+eur(matCost(p))+'</div></div>';});
   $('dlgBody').innerHTML=h;
   document.querySelectorAll('#dlgBody input').forEach(i=>{i.onchange=()=>{S[i.dataset.k][i.dataset.p]=parseFloat(i.value);rerender(render);};});};
- openDlg('Preise & Rezepte','',null,true);render();
+ openDlg('Sortiment, Preise & Rezeptur','',null,true);render();
 }
 // --- Schwarzes Brett ---
 function openBoard(){
- const render=()=>{let h='<div class="hint">Wer ins Dorf zieht, sucht Arbeit. Monatslohn je Mitarbeiter: '+eur(WAGE)+' (Fixkosten). Rollen: ';h+=Object.keys(ROLES).map(r=>'<b>'+ROLES[r]+'</b> '+ROLE_DESC[r]).join('; ')+'.</div>';
-  h+='<h3>Bewerber:innen ('+S.w.apps.length+')</h3>';if(!S.w.apps.length)h+='<div class="hint">Noch niemand. Belebe leere Häuser und Läden im Dorf – dann ziehen Leute zu.</div>';
+ const render=()=>{let h='<div class="hint">Wer ins Dorf zieht, packt gern mit an. Monatslohn je Mitarbeiter:in: '+eur(WAGE)+' (Fixkosten). Aufgaben: ';h+=Object.keys(ROLES).map(r=>'<b>'+ROLES[r]+'</b> '+ROLE_DESC[r]).join('; ')+'.</div>';
+  h+='<h3>Bewerber:innen ('+S.w.apps.length+')</h3>';if(!S.w.apps.length)h+='<div class="hint">Noch niemand. Belebe leere Häuser und Läden im Dorf – dann ziehen neue Leute zu.</div>';
   S.w.apps.forEach(a=>{const t=TRAITS.find(x=>x.id===a.trait);h+='<div class="bill"><div><b>'+a.name+'</b> ist '+t.n+'<small>'+t.d+'</small></div><div><select data-role="'+a.id+'">'+Object.keys(ROLES).map(r=>'<option value="'+r+'">'+ROLES[r]+'</option>').join('')+'</select> <button data-hire="'+a.id+'">Anstellen</button></div></div>';});
   h+='<h3>Mitarbeiter:innen ('+S.w.workers.length+')</h3>';if(!S.w.workers.length)h+='<div class="hint">Noch niemand angestellt.</div>';
   S.w.workers.forEach(w=>{const t=workerTrait(w);h+='<div class="bill"><div><b>'+w.name+'</b> – '+ROLES[w.role]+'<small>ist '+t.n+': '+t.d+'</small></div><div><button class="ghost" data-fire="'+w.id+'">Verabschieden</button></div></div>';});
@@ -1945,62 +2050,73 @@ function openBoard(){
   bindDlg('[data-hire]',b=>{const id=b.dataset.hire,a=S.w.apps.find(x=>x.id===id),role=document.querySelector('#dlgBody [data-role="'+id+'"]').value;
    S.w.workers.push({id:'w'+(S.w.wid++),name:a.name,trait:a.trait,role});S.w.apps=S.w.apps.filter(x=>x!==a);toast(a.name+' arbeitet jetzt als '+ROLES[role]+'.');S.goals.hired=true;rerender(render);});
   bindDlg('[data-fire]',b=>{const w=S.w.workers.find(x=>x.id===b.dataset.fire);const rt=workerRT[w.id];if(rt){rt.g.parent&&rt.g.parent.remove(rt.g);delete workerRT[w.id];}S.w.workers=S.w.workers.filter(x=>x!==w);S.w.apps.push({id:'a'+(S.w.wid++),name:w.name,trait:w.trait});toast(w.name+' bleibt im Dorf und hilft gern wieder.');rerender(render);});};
- openDlg('Schwarzes Brett – Bewerber','',null);render();
+ openDlg('Schwarzes Brett am Dorfplatz','',null);render();
 }
-// --- Ziele & Logbuch ---
+// --- Ziele & Tagebuch ---
 const GOALS=[
- ['intro','Schau dich um: Bauernhof mit Tabakfeld (links), Lagerhalle (rechts), Wald (hinten), Dorf mit Trafik (vorne).',()=>S.goals.moved],
- ['has_dry','Steig durch die Kellerluke in der Lagerhalle hinab zur Werkbank im Keller, kaufe einen Trockner und stelle ihn auf freier Fläche auf.',()=>S.goals.has_dry],
- ['chain','Stelle Trockner, Schneidemaschine, Zigarettenmaschine und Packmaschine auf.',()=>['dry','cut','cigm','pack'].every(t=>S.w.mach.some(m=>m.type===t))],
- ['made','Hole Rohtabak an der Lieferbox im Keller (neben der Werkbank) und schicke ihn durch die Maschinen (E: einlegen / herausnehmen).',()=>S.stat.made>=4],
- ['shelved','Trage fertige Zigaretten-Packungen in die Trafik und räume sie ins Regal (E).',()=>S.goals.shelved],
- ['served','Kassiere die erste Kundin oder den ersten Kunden an der Kassa.',()=>S.goals.served],
- ['sowed','Säe Tabak auf dem Tabakfeld beim Bauernhof (nur im Frühling möglich).',()=>S.goals.sowed],
- ['research','Erforsche etwas am Forschungs-Computer in der Halle.',()=>S.goals.research],
- ['tax','Bezahle die erste Rechnung am Finanzamt-Schreibtisch.',()=>S.goals.paidTax],
- ['chopped','Fälle im Wald einen Baum und bringe das Holz zum Holzstapel.',()=>S.goals.chopped],
- ['reno','Renoviere ein leeres Haus im Dorf (kostet Geld und Holz).',()=>S.goals.reno],
- ['pv','Montiere ein PV-Modul (Solarstrom) aufs Hallendach: kaufen an der Werkbank im Keller, dann zur Dachleiter.',()=>S.goals.pv],
- ['hired','Stelle am Schwarzen Brett deine erste Mitarbeiterin oder deinen ersten Mitarbeiter ein.',()=>S.goals.hired],
- ['cellar','Erweitere den Keller an der Werkbank (im Keller) und stelle dort Maschinen auf.',()=>S.goals.cellar],
- ['route','Baue eine Drohnenstation (erst erforschen!) und lege eine Route von A nach B fest.',()=>S.goals.route],
- ['uv','Stelle ein UV-Zuchtbeet auf – Tabak wächst damit das ganze Jahr.',()=>S.goals.has_uv],
- ['paper','Baue eine Papiermühle und stelle eigenes Zigarettenpapier her.',()=>S.goals.has_papier],
- ['furn','Richte dein Bauernhaus ein: kaufe Sofa, Kamin und Bett.',()=>['sofa','kamin','bett'].every(k=>S.w.furn[k])],
- ['row2','Belebe ein Haus in der neuen Häuserreihe hinter den Bauplätzen.',()=>['r0','r2','r4','r5'].some(k=>S.w.reno[k])],
- ['doc','Eröffne Arztpraxis und Apotheke wieder (leere Gebäude in der hinteren Reihe).',()=>S.w.reno.arzt&&S.w.reno.apo],
- ['farm','Besuche den Tierhof im Westen und sprich mit Bauer Alois.',()=>S.goals.farmTalk],
- ['milk','Gib Berta oder Gretl Heu und verkaufe Milch oder Ziegenkäse an den Bauern.',()=>S.goals.milk],
- ['dung','Lade am Misthaufen Dünger auf und ernte damit ein Tabakbeet (+1 Rohtabak).',()=>S.goals.dung],
- ['town','Das Dorf wächst: erreiche 20 Einwohner:innen.',()=>pop()>=20]
+ ['intro','Spaziere eine Runde durchs Dorf: vom Bauernhof mit dem Tabakfeld hinüber zur alten Werkhalle und weiter zur Trafik am Platz.',()=>S.goals.moved],
+ ['has_dry','Steig durch die Bodenluke in der Werkhalle in den Gewölbekeller hinab, hol dir an Großvaters Werkbank einen Trockner und stell ihn auf.',()=>S.goals.has_dry],
+ ['chain','Richte im Keller die erste kleine Manufaktur ein: Trockner, Schneidemaschine, Zigarettenmaschine und Packmaschine.',()=>['dry','cut','cigm','pack'].every(t=>S.w.mach.some(m=>m.type===t))],
+ ['made','Nimm eine Kiste Rohtabak aus der Lieferbox im Keller und verarbeite sie Schritt für Schritt an deinen Maschinen.',()=>S.stat.made>=4],
+ ['shelved','Trage die ersten fertigen Zigaretten-Packungen hinüber in die Trafik und schlichte sie ins Verkaufsregal.',()=>S.goals.shelved],
+ ['served','Bediene deine erste Kundin oder deinen ersten Kunden an der Trafik-Kassa.',()=>S.goals.served],
+ ['sowed','Säe im Frühling frischen Tabak auf den sonnigen Beeten hinter dem Bauernhof.',()=>S.goals.sowed],
+ ['research','Wirf in der Werkhalle einen Blick in die Tüftler-Ecke und schalte eine neue Idee frei.',()=>S.goals.research],
+ ['tax','Begleiche am Schreibtisch in der Werkhalle die erste Abrechnung.',()=>S.goals.paidTax],
+ ['chopped','Schlage im Waldstück hinter der Halle einen Stamm und schichte das Holz am Stapel auf.',()=>S.goals.chopped],
+ ['reno','Bring mit gesammeltem Holz das erste leerstehende Gebäude im Dorf wieder in Schuss.',()=>S.goals.reno],
+ ['pv','Montiere ein Sonnenpaneel auf dem Hallendach – erhältlich an der Werkbank, hinauf geht es über die Außenleiter.',()=>S.goals.pv],
+ ['hired','Stelle am Schwarzen Brett am Dorfplatz deine erste Aushilfe ein.',()=>S.goals.hired],
+ ['cellar','Erweitere das Kellergewölbe an der Werkbank, um mehr Platz für deine Manufaktur zu schaffen.',()=>S.goals.cellar],
+ ['route','Stelle eine Transportstation auf und verbinde zwei Stationen miteinander.',()=>S.goals.route],
+ ['uv','Stelle ein Gewächsbeet auf, damit dein Tabak auch in der kalten Jahreszeit gedeiht.',()=>S.goals.has_uv],
+ ['paper','Baue eine Papiermühle und fertige dein eigenes feines Zigarettenpapier aus Holz.',()=>S.goals.has_papier],
+ ['furn','Mach es dir im Bauernhaus gemütlich: schaffe Sofa, Kamin und Bett an.',()=>['sofa','kamin','bett'].every(k=>S.w.furn[k])],
+ ['row2','Belebe eines der stillen Wohnhäuser in der oberen Dorfgasse.',()=>['r0','r2','r4','r5'].some(k=>S.w.reno[k])],
+ ['doc','Hole Landarztpraxis und Marien-Apotheke zurück ins Dorf.',()=>S.w.reno.arzt&&S.w.reno.apo],
+ ['farm','Statte dem Tierhof im Westen einen Besuch ab und plaudere mit Bauer Alois.',()=>S.goals.farmTalk],
+ ['milk','Füttere Kuh Berta oder Ziege Gretl mit duftendem Heu und verkaufe frische Milch oder Käse.',()=>S.goals.milk],
+ ['dung','Hole am Tierhof guten Hofdünger und dünge damit ein abgeerntetes Tabakbeet.',()=>S.goals.dung],
+ ['town','Lass das Dorf wieder aufblühen, bis 20 Bewohnerinnen und Bewohner hier leben.',()=>pop()>=20]
 ];
 function currentGoal(){return GOALS.find(g=>!g.done&&!g[2]());}
 function openLog(){
- let h='<h3>Dein Fortschritt</h3>';GOALS.forEach(g=>{h+='<div class="kv"><span>'+(g[2]()?'✔ ':'○ ')+g[1]+'</span></div>';});
- h+='<h3>Das Dorf</h3><div class="kv"><span>Einwohner</span><b>'+pop()+'</b></div>';
- W.bld.forEach(bb=>{h+='<div class="kv"><span>'+bb.t.name+'</span><span>'+(S.w.reno[bb.t.id]?'<b style="color:#6b8e4e">belebt ✔</b>':'leer / zu verkaufen')+'</span></div>';});
- h+='<h3>Bilanz</h3><div class="kv"><span>Hergestellte Chargen</span><b>'+S.stat.made+'</b></div><div class="kv"><span>Geerntete Kisten Tabak</span><b>'+S.stat.harvest+'</b></div><div class="kv"><span>Bediente Kunden</span><b>'+S.stat.served+'</b></div>';
- h+=glossary();h+='<h3>Chronik</h3>'+(logs.slice(0,12).map(l=>'<div class="hint">• '+l+'</div>').join('')||'<div class="hint">Noch nichts.</div>');
- openDlg('Logbuch',h,null,true);
+ let h='<h3>Deine Dorfchronik</h3>';GOALS.forEach(g=>{h+='<div class="kv"><span>'+(g[2]()?'✔ ':'○ ')+g[1]+'</span></div>';});
+ h+='<h3>Das Dorf</h3><div class="kv"><span>Einwohner:innen</span><b>'+pop()+'</b></div>';
+ W.bld.forEach(bb=>{h+='<div class="kv"><span>'+bb.t.name+'</span><span>'+(S.w.reno[bb.t.id]?'<b style="color:#5c7e3e">belebt ✔</b>':'wartet auf Renovierung')+'</span></div>';});
+ h+='<h3>Bilanz</h3><div class="kv"><span>Hergestellte Chargen</span><b>'+S.stat.made+'</b></div><div class="kv"><span>Geerntete Kisten Tabak</span><b>'+S.stat.harvest+'</b></div><div class="kv"><span>Bediente Kundschaft</span><b>'+S.stat.served+'</b></div>';
+ h+=glossary();h+='<h3>Letzte Einträge</h3>'+(logs.slice(0,12).map(l=>'<div class="hint">• '+l+'</div>').join('')||'<div class="hint">Noch keine Einträge.</div>');
+ openDlg('Tagebuch & Dorfchronik',h,null,true);
 }
 function helpText(){
- const k=TP?'<li><b>WASD</b> gehen · <b>Linksklick</b> auf Boden: hinlaufen · auf Objekt: hinlaufen und benutzen</li><li><b>←/→ oder rechte Maustaste ziehen</b> Kamera drehen · <b>Mausrad</b> zoomen</li><li><b>Rechtsklick</b> auf Maschine: aufheben</li>':'<li><b>W A S D</b> gehen · <b>Maus</b> umsehen · <b>Shift</b> rennen · <b>Linksklick oder E</b> benutzen · <b>Rechtsklick</b> aufheben</li>';
- return '<ul class="help">'+k+'<li><b>E</b> benutzen, nehmen, einlegen · <b>X</b> Maschine aufheben · <b>G</b> Maschine pflegen (Wartung) · <b>R</b> beim Aufstellen drehen</li><li><b>L</b> Logbuch · <b>P</b> Fotomodus · <b>M</b> Musik an/aus · <b>H</b> diese Hilfe · <b>Esc</b> Menü</li><li>Beim Anvisieren eines Objekts siehst du unten Name, Erklärung und die passende Taste.</li></ul>';
+ const k=TP?'<li><b>WASD</b> gehen · <b>Linksklick</b> auf Boden: hinlaufen · auf Objekt: hinlaufen und benutzen</li><li><b>←/→ oder rechte Maustaste ziehen</b> Kamera drehen · <b>Mausrad</b> zoomen</li><li><b>Rechtsklick</b> auf Maschine: aufheben</li>':'<li><b>W A S D</b> gehen · <b>Maus</b> umsehen · <b>Shift</b> flott gehen · <b>Linksklick oder E</b> benutzen · <b>Rechtsklick</b> aufheben</li>';
+ return '<ul class="help">'+k+'<li><b>E</b> benutzen, nehmen, einlegen · <b>X</b> Maschine aufheben · <b>G</b> Maschine pflegen · <b>R</b> beim Aufstellen drehen</li><li><b>L</b> Tagebuch · <b>P</b> Fotomodus · <b>M</b> Musik an/aus · <b>H</b> oder <b>Esc</b> dieses Menü</li></ul>';
 }
 function glossary(){
- const G=[['Trafik','Tabakfachgeschäft (in Österreich auch für Zeitungen und Lotto).'],['Kassa','Die Geldkassa deines Betriebs.'],['Rohtabak','Geerntete, noch unverarbeitete Tabakblätter.'],['Kiste','Ein Transportbehälter mit 10 Stück einer Ware.'],['Charge','Ein Arbeitsgang einer Maschine (10 Stück).'],['FP','Forschungspunkte: damit erforschst du Neues am Forschungs-Computer.'],['USt','Umsatzsteuer, 20 % auf Verkäufe. Die Vorsteuer (USt auf deine Einkäufe) wird abgezogen.'],['Tabaksteuer','Steuer auf Tabakwaren, wird beim Verkauf fällig.'],['Trafikanten-Spanne','Der Verdienstanteil der Trafik am Verkaufspreis.'],['Herstellkosten','Was ein Stück in der Produktion kostet.'],['Abschreibung','Kosten für Maschinen werden auf 10 Jahre verteilt.'],['ESt / KöSt','Einkommensteuer (Einzelunternehmen) bzw. Körperschaftsteuer (GmbH).'],['PV','Photovoltaik: Solarmodule, die bei Sonne Strom liefern.'],['kW','Kilowatt: Stromleistung. Maschinen verbrauchen, PV und Generatoren erzeugen.'],['Maschinen-Lampe','Grün = arbeitet · Orange = Ausgabe voll, bitte Waren holen · Grau = wartet auf Material.']];
- return '<h3>Begriffe kurz erklärt</h3>'+G.map(x=>'<div class="kv"><span><b>'+x[0]+'</b></span><span style="text-align:right;max-width:70%">'+x[1]+'</span></div>').join('');
+ const G=[['Trafik','Traditionelles österreichisches Tabakfachgeschäft mit Zeitungen, Magazinen und Lotto.'],['Kassa','Das Bargeld in deiner Ladenkassa.'],['Rohtabak','Geerntete, noch unverarbeitete Tabakblätter vom Feld.'],['Kiste','Eine Holzkiste fasst 10 Einheiten einer Ware.'],['Charge','Ein Durchgang an einer Maschine (jeweils 10 Stück).'],['FP','Tüftler-Punkte für neue Rezepte und Geräte.'],['USt','Umsatzsteuer (20 % auf Verkäufe, abzüglich Vorsteuer aus Einkäufen).'],['Tabaksteuer','Steuer auf Tabakwaren, wird beim Verkauf in der Trafik fällig.'],['Trafikanten-Spanne','Der Handelsanteil der Trafik am Verkaufspreis.'],['Herstellkosten','Was Rohstoffe und Fertigung je Packung kosten.'],['Abschreibung','Anschaffungskosten für Geräte werden über 10 Jahre verteilt.'],['ESt / KöSt','Einkommensteuer (Einzelunternehmen) bzw. Körperschaftsteuer (GmbH).'],['PV','Sonnenpaneele auf dem Hallendach, die tagsüber Strom liefern.'],['Maschinen-Lampe','Grün = läuft · Warmgelb = Ausgabe bereit zum Abholen · Grau = wartet auf Rohstoff.']];
+ return '<h3>Kleines Dorf-Lexikon</h3>'+G.map(x=>'<div class="kv"><span><b>'+x[0]+'</b></span><span style="text-align:right;max-width:70%">'+x[1]+'</span></div>').join('');
 }
 function openMenu(){
- const h='<div class="hint">Autospeichern läuft alle 20 Sekunden.</div>'+helpText()+'<div class="sl" style="margin:8px 0"><label>Zeittempo: <b id="spLbl">'+SPEEDS[S.speed][0]+'</b></label><input type="range" id="spR" min="0" max="4" step="1" value="'+S.speed+'" style="width:100%"><div class="hint">Gilt für Tag/Nacht, Monate, Jahreszeiten, Anbau und Fälligkeiten. Standard: Normal (ein Tag ≈ 12 Min).</div></div><div class="sl" style="margin:8px 0"><label>Grafikqualität: <b>'+({niedrig:'Niedrig',mittel:'Mittel',hoch:'Hoch'})[GFXQ]+'</b></label><div>'+['niedrig','mittel','hoch'].map(q=>'<button class="bGfx" data-q="'+q+'"'+(q===GFXQ?' style="outline:2px solid #e0a040"':'')+'>'+({niedrig:'Niedrig',mittel:'Mittel',hoch:'Hoch'})[q]+'</button>').join('')+'</div><div class="hint">Niedrig: für schwache Grafik (Akku/integrierte GPU). Mittel: empfohlen für Steam Machine. Hoch: schärfere Texturen, mehr Gras & Schatten. Das Spiel lädt kurz neu, der Spielstand bleibt erhalten.</div></div><div><button id="bMusic">Musik: '+(S.music?'an':'aus')+'</button><button id="bSave" class="ghost">Jetzt speichern</button><button id="bPhoto" class="ghost">Fotomodus</button><button id="bLog" class="ghost">Logbuch</button><button id="bReset" class="ghost">Neu anfangen</button></div>'+updateSection()+glossary();
- openDlg('Menü & Hilfe',h);bindUpdate();
+ const h='<div class="hint">Dein Spielstand wird alle 20 Sekunden automatisch gesichert.</div><h3>Steuerung</h3>'+helpText()+'<div class="sl" style="margin:8px 0"><label>Zeittempo: <b id="spLbl">'+SPEEDS[S.speed][0]+'</b></label><input type="range" id="spR" min="0" max="4" step="1" value="'+S.speed+'" style="width:100%"><div class="hint">Bestimmt den Lauf von Tag &amp; Nacht, Jahreszeiten und Pflanzenwachstum. Standard: Normal (ein Tag ≈ 12 Min).</div></div><div class="sl" style="margin:8px 0"><label>Grafikqualität: <b>'+({niedrig:'Niedrig',mittel:'Mittel',hoch:'Hoch'})[GFXQ]+'</b></label><div>'+['niedrig','mittel','hoch'].map(q=>'<button class="bGfx" data-q="'+q+'"'+(q===GFXQ?' style="outline:2px solid #d8a050"':'')+'>'+({niedrig:'Niedrig',mittel:'Mittel',hoch:'Hoch'})[q]+'</button>').join('')+'</div><div class="hint">Niedrig: sparsam für integrierte Grafik. Mittel: ausgewogen. Hoch: feine Texturen, dichtes Gras &amp; weiche Schatten.</div></div><div><button id="bMusic">Musik: '+(S.music?'an':'aus')+'</button><button id="bSave" class="ghost">Jetzt speichern</button><button id="bPhoto" class="ghost">Fotomodus</button><button id="bLog" class="ghost">Tagebuch</button><button id="bReset" class="ghost">Neu anfangen</button></div>'+updateSection()+glossary();
+ openDlg('Menü & Einstellungen',h);bindUpdate();
  $('spR').oninput=e=>{S.speed=+e.target.value;S.speedChosen=true;$('spLbl').textContent=SPEEDS[S.speed][0];};$('spR').onchange=()=>saveState();
  document.querySelectorAll('.bGfx').forEach(el=>el.onclick=()=>{const q=el.dataset.q;if(q===GFXQ)return;setGfxQuality(q);saveState();window.removeEventListener('beforeunload',saveState);location.reload();});
- $('bMusic').onclick=()=>{toggleMusic();$('bMusic').textContent='Musik: '+(S.music?'an':'aus');};$('bSave').onclick=()=>{saveState();toast('Gespeichert.');};$('bPhoto').onclick=()=>{closeDlg();togglePhoto();};$('bLog').onclick=()=>{closeDlg();openLog();};
+ $('bMusic').onclick=()=>{toggleMusic();$('bMusic').textContent='Musik: '+(S.music?'an':'aus');};$('bSave').onclick=()=>{saveState();toast('Spielstand gespeichert.');};$('bPhoto').onclick=()=>{closeDlg();togglePhoto();};$('bLog').onclick=()=>{closeDlg();openLog();};
  $('bReset').onclick=()=>{if(confirm('Wirklich ganz von vorne beginnen?')){localStorage.removeItem(SAVE_KEY);window.removeEventListener('beforeunload',saveState);location.reload();}};
 }
 function openIntro(){
- openDlg('Willkommen im Dorf','<p>Du hast von einer entfernten Tante geerbt: einen <b>Bauernhof</b> mit Feld, eine <b>alte Lagerhalle</b>, ein Stück <b>Wald</b> und sogar eine rostige <b>Ölquelle</b>. Eigentlich bist du nur gekommen, um alles zu verkaufen.</p><p>Aber das Dorf ist leer und still: dunkle Fenster, „Zu verkaufen“-Schilder. Unter der Halle wartet ein <b>riesiger Keller</b> – dort stehen Werkbank und Lieferbox des Großhandels. Du beschließt zu bleiben – und aufzubauen, mit deinen eigenen Händen.</p><p>Es gibt keinen Zeitdruck, keine Strafen und kein Game-over. Alles, was du hier siehst, kannst du selbst tun.</p>'+helpText()+'<button id="bStart">Los geht\'s</button>');
+ openDlg('Willkommen im Dorf',
+  '<div class="intro-card">'+
+   '<div class="intro-crest">✦ Dorfchronik · Frühling 2026 ✦</div>'+
+   '<div class="intro-lead">'+
+    '<p>Von <b>Oma und Opa</b> hast du die kleine <b>Dorf-Trafik</b> am Platz, den gemütlichen <b>Bauernhof</b> samt sonnigem Tabakfeld nebenan und die alte <b>Werkhalle</b> mit ihrem tiefen Gewölbekeller übernommen.</p>'+
+    '<p>Im Ort ist es in den letzten Jahren still geworden – viele Fenster sind dunkel, an den alten Läden hängen Holzschilder. Doch im Keller wartet noch Großvaters Werkbank, und im Boden steckt gute Erde.</p>'+
+    '<p>Sperr die Trafik wieder auf, zieh deinen eigenen Tabak und bring Schritt für Schritt neues Leben in die Gassen – ganz in deinem eigenen Tempo, ohne Zeitdruck.</p>'+
+   '</div>'+
+   '<div class="intro-sub">Steuerung &amp; Einstellungen findest du jederzeit rechts oben über <b>⚙ Menü</b> (oder mit <b>Esc</b>).</div>'+
+   '<button id="bStart" class="intro-btn">Trafik aufsperren &amp; ins Dorf treten</button>'+
+  '</div>');
+ if($('dlgClose'))$('dlgClose').style.display='none';
  $('bStart').onclick=()=>{S.intro=true;closeDlg();startAudio();Ctl.requestLock&&Ctl.requestLock();};
 }
 // --- Fotomodus ---
@@ -2021,28 +2137,31 @@ function startAudio(){
   step++;};
  loop();musicT=setInterval(loop,1800);
 }
-function toggleMusic(){S.music=!S.music;if(S.music){if(AC){AC.resume();if(!musicT)startAudioLoopRestart();}else startAudio();}else{if(AC)AC.suspend();}toast('Musik '+(S.music?'an':'aus')+'.');}
+function toggleMusic(){S.music=!S.music;if($('bMusicB'))$('bMusicB').textContent=S.music?'🎵 Musik':'🔇 Stumm';if(S.music){if(AC){AC.resume();if(!musicT)startAudioLoopRestart();}else startAudio();}else{if(AC)AC.suspend();}toast('Musik '+(S.music?'eingeschaltet':'stummgeschaltet')+'.');}
 function startAudioLoopRestart(){AC.close&&0;}
 // --- HUD ---
 let lastHint='',hudT=0;
 function updateHUD(){
- $('money').textContent='Kassa: '+eur(S.money);$('free').textContent='Frei nach Steuern: '+eur(freeMoney());
+ $('money').textContent=eur(S.money);
+ $('free').textContent='';
  const hr=Math.floor((S.tod*24)%24),mi=Math.floor(((S.tod*24)%1)*60);
- $('date').textContent=dateStr(S.m)+' · '+String(hr).padStart(2,'0')+':'+String(mi).padStart(2,'0')+' Uhr';
- $('weather').textContent={sun:'Sonnig',cloud:'Wolkig',rain:'Regen',snow:'Schnee'}[weather.type]+' · Strom: erzeugt '+fmt(power.prod,1)+' kW, braucht '+fmt(power.cons,1)+' kW · Speicher '+Math.round(power.batt)+' von '+batteryCap();
- $('bills').textContent=S.bills.length?S.bills.length+' offene Rechnung'+(S.bills.length>1?'en':'')+' ('+eur(openTotal())+')':'';
- const g=currentGoal();$('goal').innerHTML=g?'<b>Aktuelles Ziel</b><br>'+escH(g[1]):'<b>Alle Ziele erreicht</b><br>Baue dein Dorf weiter aus.';
+ const wLbl={sun:'☀ Sonnig',cloud:'⛅ Wolkig',rain:'🌧 Regen',snow:'❄ Schnee'}[weather.type]||'☀ Sonnig';
+ $('date').textContent=wLbl+' · '+dateStr(S.m)+' · '+String(hr).padStart(2,'0')+':'+String(mi).padStart(2,'0')+' Uhr';
+ const hasPwr=power.prod>0.01||power.cons>0.01||batteryCap()>0;
+ $('weather').textContent=hasPwr?('⚡ Strom: +'+fmt(power.prod,1)+' kW / −'+fmt(power.cons,1)+' kW'+(batteryCap()>0?' · Speicher '+Math.round(power.batt)+'/'+batteryCap():'')):'';
+ $('bills').textContent=S.bills.length?('✉ '+S.bills.length+' offene Rechnung'+(S.bills.length>1?'en':'')+' ('+eur(openTotal())+')'):'';
+ const g=currentGoal();$('goal').innerHTML=g?'<b>✦ Notiz im Tagebuch</b>'+escH(g[1]):'<b>✦ Dorfchronik</b>Das Dorf blüht wieder – gestalte es nach Herzenslust weiter.';
  const c=carryLabel();$('carry').textContent=c?'In der Hand: '+c:'';$('carry').style.display=c?'block':'none';
- $('route').style.display=routeMode?'block':'none';if(routeMode)$('route').textContent=routeMode.src?'Routenplanung · Quelle: '+routeMode.src.name+' · jetzt das Ziel anvisieren (E)':'Routenplanung · Quelle anvisieren (E) · Drohnenstation nochmal E beendet';
+ $('route').style.display=routeMode?'block':'none';if(routeMode)$('route').textContent=routeMode.src?'Transportroute · Quelle: '+routeMode.src.name+' · nun das Ziel anvisieren (E)':'Transportroute · Quelle anvisieren (E) · nochmal E an der Station beendet';
 }
 const escH=x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 function updateHint(){
  const t=selTarget||nearTarget,c=S.w.carry;let name='',desc='',key='';
- if(ghost&&c&&c.kind==='machine'){const T=MT[c.type];name=T.n+' aufstellen';desc=T.desc;key=ghost.userData.ok?'Klick oder E: hier aufstellen  ·  R: drehen':'Hier nicht möglich – wähle freie Fläche in Halle oder Keller';}
+ if(ghost&&c&&c.kind==='machine'){const T=MT[c.type];name=T.n+' aufstellen';desc=T.desc;key=ghost.userData.ok?'E: hier aufstellen · R: drehen':'Hier kein Platz – wähle eine freie Stelle in Halle oder Keller';}
  else if(t){name=t.name?t.name():'';desc=t.desc?t.desc():'';key=hintFor(t);}
  const k=name+'|'+desc+'|'+key;
  if(k!==lastHint){lastHint=k;const kk=escH(key).replace(/(^|[\s(·])([EXGR]):/g,'$1<kbd>$2</kbd>');
-  $('hint').innerHTML=(name?'<div class="hn">'+escH(name)+'</div>':'')+(desc?'<div class="hd">'+escH(desc)+'</div>':'')+(kk?'<div class="hk">'+kk+'</div>':'');$('hint').style.opacity=k==='||'?0:1;}
+  $('hint').innerHTML=(name?'<div class="hn">'+escH(name)+'</div>':'')+(desc&&desc!==name?'<div class="hd">'+escH(desc)+'</div>':'')+(kk?'<div class="hk">'+kk+'</div>':'');$('hint').style.opacity=k==='||'?0:1;}
 }
 
 // ===== Erweiterung: zweite Häuserreihe, Arzt, Apotheke, Tierhof =====
@@ -2134,7 +2253,7 @@ function buildTierhof(){
  // Bauer
  const bauer=makeNpc('bauer',{name:'Bauer Alois',x:-48.2,z:29.8,ry:-1.9,hair:'#c8c8c8',skin:'#f0c090',shirt:'#4a6a9a',hat:true,lines:FARM_LINES});
  bauer.g.children[2].material=mat('#c9a050');bauer.g.children[3].material=mat('#c9a050');
- bauer.lab=labelSprite();bauer.lab.position.set(0,2.5,0);bauer.g.add(bauer.lab);setLabel(bauer.lab,'Bauer Alois','Tierhof · E: reden');
+ bauer.lab=labelSprite();bauer.lab.position.set(0,2.5,0);bauer.g.add(bauer.lab);setLabel(bauer.lab,'Bauer Alois','Nachbar vom Tierhof');
  // Tiere
  const cow=mkAnimalMesh('cow'),goat=mkAnimalMesh('goat');outG.add(cow);outG.add(goat);
  animals=[{k:'cow',nm:'Kuh Berta',g:cow,x:-53,z:27,tx:-52,tz:28,wait:2,r:0.8,col:addCol(0,0,0,0,'out'),ph:0,spd:0.55},{k:'goat',nm:'Ziege Gretl',g:goat,x:-56,z:24,tx:-55,tz:25,wait:1,r:0.55,col:addCol(0,0,0,0,'out'),ph:2,spd:0.9}];
@@ -3740,7 +3859,7 @@ buildMachineMesh=function(type){
  g.userData.lab=labelSprite();g.userData.lab.position.set(0,tall?3.0:2.6,0);g.add(g.userData.lab);return g;};
 
 // ===== Version & Update-Prüfung (GitHub Pages) =====
-const GAME_VERSION='2026.10.24-1';
+const GAME_VERSION='2026.10.24-2';
 const UPDATE_URL='https://asmodia3009.github.io/trafik-spiel/';
 const IS_APP=!!(window.trafikApp&&window.trafikApp.isApp);
 function cmpVer(a,b){const pa=String(a).split(/[.\-]/).map(n=>parseInt(n,10)||0),pb=String(b).split(/[.\-]/).map(n=>parseInt(n,10)||0);for(let i=0;i<Math.max(pa.length,pb.length);i++){const d=(pa[i]||0)-(pb[i]||0);if(d)return d>0?1:-1;}return 0;}
@@ -3825,7 +3944,7 @@ function labelsRefresh(){
   if(m.g.userData.glow)m.g.userData.glow.color.set(m.st===1?'#e8a0ff':'#9a70b0');
  }
  setLabel(W.rohlager.lab,'Rohlager',S.w.stock.leaf+' Kisten Rohtabak');setLabel(W.holz.lab,'Holzstapel',S.w.stock.log+' Holz');
- setLabel(W.well.lab,'Ölquelle',S.w.oil.on?Math.floor(S.w.oil.n)+' Fässer bereit':'rostig – E: in Betrieb nehmen');
+ setLabel(W.well.lab,'Ölquelle',S.w.oil.on?Math.floor(S.w.oil.n)+' Fässer bereit':'stillgelegt · bereit zur Instandsetzung');
 }
 let t05=0,t02=0,t1=0,tSave=0;
 function gameTick(dt){
