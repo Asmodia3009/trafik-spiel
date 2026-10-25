@@ -180,7 +180,7 @@ function freshState(){
   mon:{rev:0,cost:0,tab:0},yr:{rev:0,cost:0,tab:0,lab:0},invest:0,loss:0,history:[],lastMonth:null,audit:null,profitWin:[],gift:0,
   tod:0.33,speed:3,speedChosen:false,speedV2:true,intro:false,goals:{},stat:{harvest:0,served:0,made:0},music:true};
  PRODUCTS.forEach(p=>{s.recipe[p.id]=50;s.price[p.id]=p.ref;s.sold[p.id]=0;s.shelf[p.id]=0;});
- s.w={lvl:0,pv:0,mach:[],nid:1,stock:{leaf:0,log:0},plots:[],trees:{},reno:{},workers:[],apps:[],routes:[],carry:null,oil:{on:false,n:0,t:0},furn:{},farm:{talk:0,cowT:-1,goatT:-1,cowFed:-9,goatFed:-9,dung:0,dungT:0,earned:0,npcTalk:{}},paint:0,giftCd:0,pos:null,popSeed:1,energy:0,wid:1};
+ s.w={lvl:0,pv:0,mach:[],crates:[],nid:1,stock:{leaf:0,log:0},plots:[],trees:{},reno:{},workers:[],apps:[],routes:[],carry:null,oil:{on:false,n:0,t:0},furn:{},farm:{talk:0,cowT:-1,goatT:-1,cowFed:-9,goatFed:-9,dung:0,dungT:0,earned:0,npcTalk:{}},paint:0,giftCd:0,pos:null,popSeed:1,energy:0,wid:1};
  for(let i=0;i<12;i++)s.w.plots.push({st:0,t0:0});
  return s;
 }
@@ -804,6 +804,42 @@ function meadowPatchMat(){
  return (_meadowPatchMat=m);
 }
 
+function addRoundHayBale(b,x,y,z,ry,scale){
+ const s=scale||1,r=0.52*s,len=0.92*s,yc=y+r;
+ b.frame(x,0,z,ry||0);
+ b.as('wood');
+ b.cyc(r,len,'#d8b454',0,yc,0,20,0,0,Math.PI/2);
+ for(let i=0;i<8;i++){
+  const a=i*Math.PI/4;
+  b.bx(len*0.98,0.055*s,0.055*s,i%2?'#c7a042':'#e2c266',0,yc+Math.sin(a)*(r-0.025*s),Math.cos(a)*(r-0.025*s),0,0,0);
+ }
+ for(const sx of[-1,1]){
+  const ex=sx*(len*0.5+0.004);
+  b.cyc(r*0.92,0.018*s,'#c29b3c',ex,yc,0,18,0,0,Math.PI/2);
+  b.cyc(r*0.64,0.024*s,'#ab842f',ex,yc,0,16,0,0,Math.PI/2);
+  b.cyc(r*0.34,0.03*s,'#916d22',ex,yc,0,12,0,0,Math.PI/2);
+  b.cyc(r*0.12,0.036*s,'#6e5016',ex,yc,0,10,0,0,Math.PI/2);
+ }
+ b.as('fabric');
+ for(const tx of[-0.28*s,0,0.28*s]){
+  b.cyc(r+0.014*s,0.032*s,'#8c6232',tx,yc,0,20,0,0,Math.PI/2);
+ }
+ b.as(null);b.reset();
+}
+function addRectHayBale(b,x,y,z,ry){
+ b.frame(x,y,z,ry||0);
+ b.as('wood');
+ b.bx(0.96,0.54,0.68,'#d8b454',0,0,0);
+ for(let ly=0;ly<3;ly++){
+  b.bx(0.98,0.12,0.70,ly%2?'#c8a243':'#e0c062',0,0.05+ly*0.17,0);
+ }
+ b.as('fabric');
+ for(const tx of[-0.24,0.24]){
+  b.bx(0.035,0.56,0.72,'#8c6232',tx,0,0);
+ }
+ b.as(null);b.reset();
+}
+
 // ===== Welt (three.js) =====
 const TP=VARIANT==='tp';
 const colliders=[]; // {x1,z1,x2,z2,L}
@@ -867,9 +903,23 @@ function buildSky(){
  W.stars=new THREE.Points(sgm,new THREE.PointsMaterial({color:'#fff8e0',size:2.2,sizeAttenuation:false,fog:false,transparent:true,opacity:0,depthWrite:false}));W.stars.frustumCulled=false;scene.add(W.stars);
 }
 
-function fenceLine(x1,z1,x2,z2,gap){const len=Math.hypot(x2-x1,z2-z1),n=Math.max(1,Math.round(len/1.6)),ang=Math.atan2(x2-x1,z2-z1)-Math.PI/2;
- for(let i=0;i<=n;i++){const f=i/n,x=x1+(x2-x1)*f,z=z1+(z2-z1)*f;envB.bx(0.16,1.0,0.16,'#b98a5a',x,0,z);envB.cone(0.11,0.14,'#b98a5a',x,1.0,z,4);}
- const mx=(x1+x2)/2,mz=(z1+z2)/2;envB.bx(0.07,0.1,len,'#c79a68',mx,0.62,mz,Math.atan2(x2-x1,z2-z1)+Math.PI/2*0,0);envB.bx(0.07,0.1,len,'#c79a68',mx,0.28,mz,Math.atan2(x2-x1,z2-z1)+Math.PI/2*0,0);}
+function fenceLine(x1,z1,x2,z2,gap){const len=Math.hypot(x2-x1,z2-z1),n=Math.max(1,Math.round(len/1.6)),ry=Math.atan2(x2-x1,z2-z1);
+ envB.as('wood');
+ for(let i=0;i<=n;i++){const f=i/n,x=x1+(x2-x1)*f,z=z1+(z2-z1)*f;
+  envB.bx(0.16,0.18,0.16,'#4d3622',x,0,z,ry);
+  envB.bx(0.15,0.98,0.15,'#6b4c32',x,0,z,ry);
+  envB.bx(0.19,0.045,0.19,'#543b26',x,0.97,z,ry);
+  envB.bx(0.14,0.025,0.14,'#7c593b',x,1.015,z,ry);
+ }
+ const mx=(x1+x2)/2,mz=(z1+z2)/2;
+ envB.bx(0.065,0.11,len,'#7d5a3c',mx,0.66,mz,ry,0);
+ envB.bx(0.065,0.11,len,'#745236',mx,0.30,mz,ry,0);
+ envB.as('metal');
+ for(let i=0;i<=n;i++){const f=i/n,x=x1+(x2-x1)*f,z=z1+(z2-z1)*f;
+  envB.bx(0.17,0.035,0.17,'#3a3e44',x,0.70,z,ry);
+  envB.bx(0.17,0.035,0.17,'#3a3e44',x,0.34,z,ry);
+ }
+ envB.as(null);}
 function buildEnvironment(){
  seasonMats.ground=pbrMat('grass','#9bd36a',90,90,{normalScale:0.8});
  const g=new THREE.Mesh(new THREE.PlaneGeometry(500,500),seasonMats.ground);g.rotation.x=-Math.PI/2;g.receiveShadow=true;outG.add(g);W.ground=g;
@@ -909,11 +959,11 @@ function buildEnvironment(){
  const BN=50,bush=new THREE.InstancedMesh(blob(0.75,1,0.1,5),seasonMats.leafB,BN);
  for(let i=0;i<BN;i++){const [x,z]=free();const s=rnd(0.7,1.3);dm.rotation.set(0,rnd(0,6),0);dm.scale.set(s*1.2,s*0.9,s);dm.position.set(x,0.5*s,z);dm.updateMatrix();bush.setMatrixAt(i,dm.matrix);}bush.castShadow=true;outG.add(bush);
  // Dekobäume (zwei Kronen, leicht variierte Farbe)
- const N=Math.round(170*GQ.trees),trunk=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.22,0.36,1.8,10,1),mat('#9b6b43'),N),crown=new THREE.InstancedMesh(blob(1.55,GQ.detail>=2?2:1,0.07,1),seasonMats.leafA,N),crown2=new THREE.InstancedMesh(blob(1.05,1,0.08,2),seasonMats.leafB,N),crown3=new THREE.InstancedMesh(blob(0.8,1,0.1,3),seasonMats.leafA,N);
+ const N=Math.round(170*GQ.trees),trunk=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.22,0.38,1.8,12,1),texMat('wood','#634832',1,2),N),crown=new THREE.InstancedMesh(blob(1.55,GQ.detail>=2?2:1,0.07,1),seasonMats.leafA,N),crown2=new THREE.InstancedMesh(blob(1.05,1,0.08,2),seasonMats.leafB,N),crown3=new THREE.InstancedMesh(blob(0.8,1,0.1,3),seasonMats.leafA,N);
  trunk.castShadow=crown.castShadow=crown2.castShadow=crown3.castShadow=true;let k=0;
  W.treeSpots=[];
  for(let i=0;i<N*3&&k<N;i++){const a=rnd(0,6.283),r=rnd(40,100),x=Math.cos(a)*r*1.2,z=Math.sin(a)*r*0.9;
-  if(x>-60&&x<70&&z>-45&&z<50&&Math.random()<0.9)continue;if((x>-70&&x<-38&&z>8&&z<42)||(x>-52&&x<52&&z>38&&z<58))continue;
+  if(x>-60&&x<70&&z>-45&&z<50&&(Math.random()<0.9||(x>35&&x<56&&z>-30&&z<-10)))continue;if((x>-70&&x<-38&&z>8&&z<42)||(x>-52&&x<52&&z>38&&z<58))continue;
   const s=rnd(0.8,1.5);dm.position.set(x,0.9*s,z);dm.scale.setScalar(s);dm.rotation.set(0,rnd(0,6),0);dm.updateMatrix();trunk.setMatrixAt(k,dm.matrix);
   dm.position.set(x,2.6*s,z);dm.scale.set(s,s*1.15,s);dm.updateMatrix();crown.setMatrixAt(k,dm.matrix);const v=0.88+Math.random()*0.22;crown.setColorAt(k,new THREE.Color(v,v,v));
   dm.position.set(x+0.5*s,3.7*s,z-0.3*s);dm.scale.set(s,s,s);dm.updateMatrix();crown2.setMatrixAt(k,dm.matrix);crown2.setColorAt(k,new THREE.Color(v,v,v));dm.position.set(x-0.9*s,2.9*s,z+0.5*s);dm.scale.set(s,s*0.9,s);dm.updateMatrix();crown3.setMatrixAt(k,dm.matrix);crown3.setColorAt(k,new THREE.Color(v*0.95,v*0.95,v*0.95));k++;}
@@ -1295,27 +1345,93 @@ function buildHaus(){
  mk('pflanze','Zimmerpflanzen',120,-21.2,-8.2,r=>{const q=new Batch();addPlanterPot(q,0,0,0,5);q.mesh(r);});
  mk('regal','Bücherregal',280,-21.2,-4,r=>{const q=new Batch();q.bx(0.6,2.1,2,'#8a5a3a',0,0,0);for(let s=0;s<4;s++)q.bx(0.55,0.06,1.9,'#a67c52',0.02,0.1+s*0.5,0);const cs=['#c0504d','#4f81bd','#9bbb59','#f79646','#8064a2','#e6c34a'];for(let s=0;s<4;s++)for(let i=0;i<7;i++)q.bx(0.34,0.3+((i*7+s)%3)*0.04,0.18,cs[(i+s*2)%6],0.05,0.16+s*0.5,-0.8+i*0.26);q.mesh(r);});
  mk('bett','Bett (Schlafen)',400,-21.8,-6.4,r=>{const q=new Batch();q.bx(1.7,0.45,2.3,'#a0785a',0,0,0);q.bx(1.7,0.9,0.12,'#8a5a3a',0,0,-1.1);q.bx(1.5,0.3,1.9,'#f6f3ec',0,0.45,0.05);q.bx(1.55,0.2,1.0,'#8ab0d8',0,0.6,0.55);q.bx(0.6,0.15,0.4,'#fff',-0.4,0.78,-0.7);q.bx(0.6,0.15,0.4,'#fff',0.4,0.78,-0.7);q.bx(0.6,0.3,0.4,'#c9a877',1.2,0,-0.8);q.mesh(r);});
- // Scheune mit Satteldach, Tor & Heuballen
- const bn=new THREE.Group();const q=new Batch();box(5,3,4,texMat('planks','#c8574a',2,1.2),0,0,0,bn);q.bx(5.2,0.3,4.2,'#7a3a2a',0,0,0);
- const rc=new THREE.Mesh(GEO._roof||(()=>{const cg=new THREE.CylinderGeometry(1,1,1,3,1);cg.rotateX(-Math.PI/2);cg.rotateY(Math.PI/2);GEO._roof=cg;return cg;})(),texMatUnique('shingle','#7a4a3a',3,3,{side:THREE.DoubleSide}));rc.material.map.center.set(.5,.5);rc.material.map.rotation=Math.PI/2;rc.scale.set(5.8,2.2/1.5,5/1.732);rc.position.set(0,3+0.5*2.2/1.5,0);rc.castShadow=true;bn.add(rc);
- q.bx(1.8,2.3,0.12,'#a8402f',0,0,2.02);q.bx(0.12,2.3,0.12,'#f6efe0',-0.95,0,2.06);q.bx(0.12,2.3,0.12,'#f6efe0',0.95,0,2.06);q.bx(2.0,0.12,0.14,'#f6efe0',0,2.3,2.06);q.bx(0.1,2.4,0.14,'#f6efe0',0,0,2.08,0,0.7);q.bx(0.1,2.4,0.14,'#f6efe0',0,0,2.08,0,-0.7);
- q.bx(0.8,0.8,0.12,'#f6efe0',0,3.2,2.02);q.bx(0.55,0.55,0.14,'#3a2a22',0,3.33,2.03);
- q.mesh(bn);signPlane('SCHEUNE',1.8,0.5,0,2.75,2.12,0,bn,'#fff3d8','#7a3b22');
- [[-3.1,1.8],[-3.1,0.8],[-3.1,-0.3]].forEach((p,i)=>{const hb2=new Batch();hb2.cyc(0.5,0.9,'#e0c060',p[0]+(i%2)*0.1,0.5,p[1],10,0,0,Math.PI/2);hb2.mesh(bn);});
+ // Scheune mit Satteldach, Fachwerk auf allen 4 Seiten, Tor & strukturierte Rund-Heuballen
+ const bn=new THREE.Group();const q=new Batch();
+ box(5,3,4,texMat('planks','#b24738',2.5,1.5),0,0,0,bn);
+ q.as('stone');q.bx(5.28,0.34,4.28,'#857c70',0,0,0);
+ q.as('wood');
+ // Weiße/cremefarbene Eckpfosten & Traufbalken rundum
+ for(const sx of[-2.5,2.5])for(const sz of[-2.0,2.0])q.bx(0.22,3.04,0.22,'#efe6d4',sx,0,sz);
+ q.bx(5.16,0.16,4.16,'#efe6d4',0,2.88,0);
+ q.bx(5.12,0.12,4.12,'#6b3e26',0,1.48,0);
+ // Rückwand (z=-2.02) mit Scheunentor-Flügeln, Kreuzstreben und Giebelfenster
+ q.bx(1.7,2.15,0.10,'#943628',0,0.32,-2.02);
+ for(const sx of[-0.88,0,0.88])q.bx(0.11,2.2,0.14,'#efe6d4',sx,0.32,-2.04);
+ q.bx(1.88,0.12,0.14,'#efe6d4',0,2.44,-2.04);
+ q.bx(0.09,2.1,0.13,'#efe6d4',-0.44,0.36,-2.05,0,0.38);
+ q.bx(0.09,2.1,0.13,'#efe6d4',0.44,0.36,-2.05,0,-0.38);
+ // Seitenfenster links/rechts (x=-2.52 und x=2.52)
+ for(const sx of[-2.52,2.52])for(const wz of[-0.85,0.85]){
+  q.bx(0.14,0.82,0.82,'#efe6d4',sx,1.58,wz);
+  q.as('glass');q.bx(0.16,0.62,0.62,'#4a687d',sx,1.68,wz);
+  q.as('wood');q.bx(0.18,0.66,0.06,'#efe6d4',sx,1.68,wz);q.bx(0.18,0.06,0.66,'#efe6d4',sx,1.98,wz);
+ }
+ const rc=new THREE.Mesh(GEO._roof||(()=>{const cg=new THREE.CylinderGeometry(1,1,1,3,1);cg.rotateX(-Math.PI/2);cg.rotateY(Math.PI/2);GEO._roof=cg;return cg;})(),texMatUnique('shingle','#6e4232',3,3,{side:THREE.DoubleSide}));rc.material.map.center.set(.5,.5);rc.material.map.rotation=Math.PI/2;rc.scale.set(5.8,2.2/1.5,5/1.732);rc.position.set(0,3+0.5*2.2/1.5,0);rc.castShadow=true;bn.add(rc);
+ // Vorderseite (z=+2.02) Haupttor & Heuboden-Luke
+ q.bx(1.8,2.3,0.12,'#9c392a',0,0,2.02);q.bx(0.12,2.3,0.14,'#efe6d4',-0.95,0,2.05);q.bx(0.12,2.3,0.14,'#efe6d4',0.95,0,2.05);q.bx(2.04,0.12,0.15,'#efe6d4',0,2.3,2.05);q.bx(0.1,2.4,0.14,'#efe6d4',0,0,2.07,0,0.7);q.bx(0.1,2.4,0.14,'#efe6d4',0,0,2.07,0,-0.7);
+ for(const sz of[-2.02,2.02]){q.bx(0.8,0.8,0.12,'#efe6d4',0,3.2,sz);q.bx(0.56,0.56,0.14,'#3a2a22',0,3.32,sz+(sz>0?0.01:-0.01));}
+ q.as(null);
+ // Echte strukturierte Rund-Heuballen vor/neben der Scheune (statt glatter gelber Plastik-Zylinder)
+ addRoundHayBale(q,-3.15,0,1.8,0.08,1.0);
+ addRoundHayBale(q,-3.05,0,0.75,-0.06,1.0);
+ addRoundHayBale(q,-3.18,0,-0.32,0.12,1.0);
+ addRoundHayBale(q,-3.10,0.88,1.26,0.04,0.95);
+ q.mesh(bn);signPlane('SCHEUNE',1.8,0.5,0,2.75,2.14,0,bn,'#fff3d8','#7a3b22');
  bn.position.set(-32,0,-5);outG.add(bn);addCol(-34.5,-7,-29.5,-3,'out');
- const sil=new THREE.Group();const sq=new Batch();sq.cy(1,5,'#d9e0e6',0,0,0,12);for(let i=0;i<4;i++)sq.cy(1.03,0.1,'#aab4be',0,0.8+i*1.2,0,12);sq.cone(1.15,1.2,'#9a5a4a',0,5,0,12);sq.bx(0.12,5,0.12,'#8a6a46',1.05,0,0);sq.mesh(sil);
- signPlane('Silo',0.8,0.4,0,3.4,1.05,0,sil);
- sil.position.set(-35,0,-1);outG.add(sil);addCol(-36,-2,-34,0,'out');
+ // Runder Getreidesilo (24 Segmente, Steigleiter, Entnahmerohr & fest montiertes Schild ohne Schweben)
+ const sil=new THREE.Group();const sq=new Batch();
+ sq.as('stone');sq.cy(1.18,0.24,'#8d8880',0,0,0,24);
+ sq.as('metal');sq.cy(1.0,5.0,'#d4dce3',0,0.22,0,24);
+ for(let i=0;i<5;i++)sq.cy(1.03,0.08,'#919da8',0,0.65+i*1.05,0,24);
+ sq.cone(1.14,1.25,'#8c4c3c',0,5.2,0,24);
+ sq.cy(0.22,0.32,'#7a8590',0,6.35,0,16);sq.cone(0.28,0.18,'#6a382c',0,6.65,0,16);
+ // Steigleiter rechts (x=1.04) mit echten Sprossen & Rückenschutzringen
+ for(const lz of[-0.18,0.18])sq.bx(0.05,4.9,0.05,'#5e6670',1.04,0.24,lz);
+ for(let y=0.5;y<=4.9;y+=0.38)sq.bx(0.04,0.035,0.38,'#6d7680',1.06,y,0);
+ // Entnahmerohr & Stützkonsole für das Schild vorne (z=0.95..1.16), damit das Schild fest mit der runden Silowand verbunden ist
+ for(const sx of[-0.36,0.36]){
+  sq.bx(0.07,0.07,0.28,'#4f565e',sx,3.02,0.98);
+  sq.bx(0.07,0.07,0.28,'#4f565e',sx,3.34,0.98);
+  sq.bx(0.08,0.48,0.06,'#4f565e',sx,2.96,1.10);
+ }
+ sq.bx(0.92,0.46,0.05,'#3d434a',0,2.97,1.08);
+ sq.as(null);sq.mesh(sil);
+ signPlane('SILO',0.86,0.42,0,3.4,1.12,0,sil,'#fff3d8','#7a3b22');
+ sil.position.set(-35,0,-1);outG.add(sil);addCol(-36.2,-2.2,-33.8,0.2,'out');
 }
 
 function buildField(){
  W.plots=[];
- const soilM=texMat('soil','#7a5230',1.5,1.5);
+ const soilM=texMat('soil','#543822',2,2);
  for(let i=0;i<12;i++){const x=-32+(i%4)*4.4,z=-23.5+Math.floor(i/4)*4.4;
   const g=new THREE.Group();g.position.set(x,0,z);outG.add(g);
-  addMesh(geoBox,soilM,0,0.14,0,g).scale.set(3.6,0.28,3.6);
-  const fb=new Batch();fb.bx(3.8,0.18,0.12,'#a67c52',0,0.28,-1.85);fb.bx(3.8,0.18,0.12,'#a67c52',0,0.28,1.85);fb.bx(0.12,0.18,3.8,'#a67c52',-1.85,0.28,0);fb.bx(0.12,0.18,3.8,'#a67c52',1.85,0.28,0);
-  for(let r=0;r<3;r++)fb.bx(3.3,0.1,0.5,'#6a4426',0,0.28,-1.1+r*1.1);fb.mesh(g);
+  addMesh(geoBox,soilM,0,0.11,0,g).scale.set(3.64,0.22,3.64);
+  const fb=new Batch();
+  // Bodenbündiger Holzbohlen-Rahmen mit Eckpfosten und Metallbeschlägen
+  fb.as('wood');
+  fb.bx(3.88,0.26,0.14,'#735032',0,0,-1.86);fb.bx(3.88,0.26,0.14,'#735032',0,0,1.86);
+  fb.bx(0.14,0.26,3.88,'#735032',-1.86,0,0);fb.bx(0.14,0.26,3.88,'#735032',1.86,0,0);
+  fb.bx(3.92,0.04,0.17,'#5c3e24',0,0.25,-1.86);fb.bx(3.92,0.04,0.17,'#5c3e24',0,0.25,1.86);
+  fb.bx(0.17,0.04,3.92,'#5c3e24',-1.86,0.25,0);fb.bx(0.17,0.04,3.92,'#5c3e24',1.86,0.25,0);
+  for(const cx of[-1.86,1.86])for(const cz of[-1.86,1.86]){
+   fb.bx(0.20,0.32,0.20,'#4e341e',cx,0,cz);
+  }
+  fb.as('metal');
+  for(const cx of[-1.86,1.86])for(const cz of[-1.86,1.86]){
+   fb.bx(0.22,0.06,0.22,'#363a40',cx,0.22,cz);
+  }
+  // Natürliche, sanft gewölbte Pflanzfurchen / Ackererde-Reihen statt glatter Vierkant-Plastikbalken
+  fb.as('stone');
+  for(let r=0;r<3;r++){
+   const rz=-1.1+r*1.1;
+   fb.cyc(0.24,3.44,'#472e1b',0,0.16,rz,12,0,0,Math.PI/2);
+   fb.cyc(0.16,3.38,'#3b2515',0,0.24,rz,10,0,0,Math.PI/2);
+   for(let k=0;k<7;k++){
+    const sx=-1.45+k*0.48+((k+r)%2)*0.08,sz=rz+((k*3+r)%3-1)*0.11;
+    fb.sp(0.09,'#4e331e',sx,0.25,sz,1.35,0.55,1.1);
+   }
+  }
+  fb.as(null);fb.mesh(g);
   W.plots.push({g,x,z});}
  // Tabakpflanze: Stiel + große Blätter (ein Mesh, 108 Instanzen), Blüte separat
  const pb=new Batch();pb.cy(0.05,0.9,'#5a9a3a',0,0,0,5);
@@ -1331,7 +1447,19 @@ function buildField(){
 function firGeo(v){return gcache('fir'+v,()=>{const g=new THREE.ConeGeometry(1,1,GQ.detail>=2?24:18,4);const p=g.attributes.position,q=new THREE.Vector3();
  for(let i=0;i<p.count;i++){q.fromBufferAttribute(p,i);const r=Math.hypot(q.x,q.z);if(r<1e-4)continue;const a=Math.atan2(q.z,q.x),t=0.5-q.y;const f=1+t*t*(0.22*Math.sin(a*9+v*1.7)+0.1*Math.sin(a*23+v*4.1));const dr=t>0.9?-0.12*(0.5+0.5*Math.sin(a*9+v*1.7)):0;q.x*=f;q.z*=f;q.y+=dr+(t>0.9?0.06*Math.sin(a*5+v):0);p.setXYZ(i,q.x,q.y,q.z);}
  g.computeVertexNormals();return g;});}
-function mkTree(x,z,s,fir){const g=new THREE.Group(),b=new Batch();b.add(GEO.cylT(12,0.7),'#9b6b43',0,1.2*s,0,0.34*s,2.4*s,0.34*s);b.cy(0.4*s,0.2*s,'#8a5a38',0,0,0,12);for(let k=0;k<3;k++){const a=k*2.1;b.add(GEO.cyl(8),'#8a5a38',Math.cos(a)*0.3*s,0.12*s,Math.sin(a)*0.3*s,0.1*s,0.5*s,0.1*s,0,0,Math.cos(a)*0.9);}b.mesh(g);
+function mkTree(x,z,s,fir){const g=new THREE.Group(),b=new Batch();
+ b.as('wood');
+ b.add(GEO.cylT(14,0.72),'#5e4632',0,1.25*s,0,0.36*s,2.5*s,0.36*s);
+ b.cy(0.44*s,0.26*s,'#4d3826',0,0,0,14);
+ for(let i=0;i<6;i++){
+  const a=i*Math.PI/3+0.2;
+  b.bx(0.07*s,2.2*s,0.06*s,i%2?'#4a3524':'#694e38',Math.cos(a)*0.27*s,0.12*s,Math.sin(a)*0.27*s,-a);
+ }
+ for(let k=0;k<4;k++){
+  const a=k*Math.PI/2+0.35;
+  b.add(GEO.cyl(8),'#4d3826',Math.cos(a)*0.32*s,0.14*s,Math.sin(a)*0.32*s,0.11*s,0.52*s,0.11*s,Math.sin(a)*0.65,0,-Math.cos(a)*0.65);
+ }
+ b.as(null);b.mesh(g);
  if(fir){const L=[[1.75,1.9,1.9,'B'],[1.55,1.8,2.6,'A'],[1.35,1.7,3.3,'B'],[1.12,1.6,4.0,'A'],[0.9,1.45,4.7,'B'],[0.62,1.3,5.35,'A'],[0.36,1.1,5.95,'B']];L.forEach((l,li)=>{const c=addMesh(firGeo((li+Math.round(x*3+z))%3),l[3]==='A'?seasonMats.leafA:seasonMats.leafB,0,l[2]*s+l[1]*s/2,0,g);c.scale.set(l[0]*s,l[1]*s,l[0]*s);c.rotation.y=li*1.3+x;});}
  else{const cr=[[1.7,0,3.5,0,1.1,'A',1],[1.25,0.9,4.4,0.2,1,'B',2],[1.15,-0.9,3.9,-0.5,1,'B',3],[1.0,0.1,3.0,0.9,0.9,'A',4],[0.9,-0.3,4.7,-0.3,0.9,'A',5]];
   cr.forEach(c=>{const m=addMesh(blob(c[0]*s,2,0.07,c[6]),c[5]==='A'?seasonMats.leafA:seasonMats.leafB,c[1]*s,c[2]*s,c[3]*s,g);m.scale.y=c[4];});}
@@ -1339,12 +1467,12 @@ function mkTree(x,z,s,fir){const g=new THREE.Group(),b=new Batch();b.add(GEO.cyl
 function buildForest(){
  W.trees=[];let k=0,tries=0;const pts=[];
  while(k<26&&tries++<500){const x=rnd(-10,16),z=rnd(-40,-25);if(pts.some(p=>Math.hypot(p[0]-x,p[1]-z)<3.4))continue;pts.push([x,z]);
-  const t=mkTree(x,z,rnd(0.9,1.3),k%2===0);const stump=cyl(0.35,0.4,0.4,'#8a5a38',x,0,z,outG,6);stump.visible=false;
+  const t=mkTree(x,z,rnd(0.9,1.3),k%2===0);const stump=cyl(0.35,0.42,0.4,texMat('wood','#5e4632',1,1),x,0,z,outG,12);stump.visible=false;
   const col=addCol(x-0.5,z-0.5,x+0.5,z+0.5,'out');W.trees.push({g:t,stump,x,z,col,id:k});k++;}
  // Holzstapel mit Dach
- const hs=new THREE.Group();const hb=new Batch();for(let i=0;i<3;i++)for(let j=0;j<3-i;j++){const x=-0.5+j*0.5+i*0.25,y=0.24+i*0.42;hb.cyc(0.22,2.2,'#b07a45',x,y,0,8,Math.PI/2,0,0);hb.cyc(0.15,0.02,'#e8c690',x,y,1.11,8,Math.PI/2);}
- hb.bx(0.1,1.4,0.1,'#6a4a2e',-1.2,0,-0.9);hb.bx(0.1,1.4,0.1,'#6a4a2e',1.2,0,-0.9);hb.bx(0.1,1.4,0.1,'#6a4a2e',-1.2,0,0.9);hb.bx(0.1,1.4,0.1,'#6a4a2e',1.2,0,0.9);
- hb.bx(3.0,0.1,2.3,'#9a5a3a',0,1.4,0,0,0.0,0.12);hb.cy(0.3,0.4,'#8a5a38',1.9,0,0.4,8);hb.bx(0.08,0.5,0.08,'#6a4a2e',1.9,0.4,0.4);hb.bx(0.3,0.15,0.04,'#aab',1.9,0.75,0.4);
+ const hs=new THREE.Group();const hb=new Batch();hb.as('wood');for(let i=0;i<3;i++)for(let j=0;j<3-i;j++){const x=-0.5+j*0.5+i*0.25,y=0.24+i*0.42;hb.cyc(0.22,2.2,'#6e4f35',x,y,0,12,Math.PI/2,0,0);hb.cyc(0.16,0.03,'#d8b882',x,y,1.11,12,Math.PI/2);}
+ hb.bx(0.1,1.4,0.1,'#5a3e28',-1.2,0,-0.9);hb.bx(0.1,1.4,0.1,'#5a3e28',1.2,0,-0.9);hb.bx(0.1,1.4,0.1,'#5a3e28',-1.2,0,0.9);hb.bx(0.1,1.4,0.1,'#5a3e28',1.2,0,0.9);
+ hb.bx(3.0,0.1,2.3,'#7a4830',0,1.4,0,0,0.0,0.12);hb.cy(0.3,0.4,'#5e4632',1.9,0,0.4,12);hb.bx(0.08,0.5,0.08,'#5a3e28',1.9,0.4,0.4);hb.as('metal');hb.bx(0.3,0.15,0.04,'#9aa2ab',1.9,0.75,0.4);hb.as(null);
  hb.mesh(hs);
  hs.position.set(-2,0,-20);outG.add(hs);W.holz=hs;hs.lab=labelSprite();hs.lab.position.set(0,2.7,0);hs.add(hs.lab);addCol(-3.3,-20.6,-0.7,-19.4,'out');
  const sg=new THREE.Group();cyl(0.07,0.08,1.75,'#6a4a2e',0,0,0,sg,8);signPlane('WALDSTÜCK\nBrennholz & Stämme',2.1,0.82,0,2.16,0,0,sg);sg.position.set(-5,0,-23.5);outG.add(sg);
@@ -1352,18 +1480,109 @@ function buildForest(){
 }
 function buildOil(){
  const g=new THREE.Group();g.position.set(46,0,-20);outG.add(g);
- const q=new Batch();q.bx(3.4,0.3,3.4,'#555a60',0,0,0);q.bx(3.0,0.1,3.0,'#7a8088',0,0.3,0);
- [[-1,-1],[1,-1],[1,1],[-1,1]].forEach(p=>{q.add(GEO.box(),'#7a8088',p[0]*0.6,3.1,p[1]*0.6,0.15,6,0.15,p[1]*-0.06*-1,0,-p[0]*0.06);});
- for(let i=0;i<5;i++)q.bx(1.0-i*0.1,0.08,0.08,'#8a9098',0,0.9+i*1.1,0.5);
- q.bx(0.5,0.5,0.5,'#c04a3a',0,6.0,0);q.cy(0.07,2.5,'#3f4350',2.2,0.3,0.3,6);
- for(let i=0;i<3;i++){q.cy(0.42,0.95,i%2?'#2a2a30':'#c04a3a',3.1+(i%2)*0.9,0,-1+i*0.9,10);q.cy(0.43,0.08,'#e0b030',3.1+(i%2)*0.9,0.5,-1+i*0.9,10);}
- q.cy(0.9,1.3,'#d8d0c0',-3.2,0,-1,12);q.cone(0.95,0.5,'#c04a3a',-3.2,1.3,-1,12);q.cy(0.07,2.4,'#8a9098',-2.2,0.3,0.5,6);q.bx(0.9,0.4,0.9,'#e0b030',2.2,0,2.4);
- for(let i=0;i<6;i++)q.bx(0.2,0.22,0.1,i%2?'#e0b030':'#2b2b2b',-1.5+i*0.6,0.3,1.7);
- q.mesh(g);
- const beam=new THREE.Group();const bb=new Batch();bb.as('metal');bb.bx(4,0.3,0.36,'#c04a3a',0,0,0);bb.bx(0.75,1.15,0.52,'#a8382a',1.85,-0.55,0);bb.bx(0.82,0.38,0.56,'#3a3f47',-1.85,-0.2,0);bb.bx(0.24,1.2,0.24,'#8a9098',-1.8,-1.2,0);bb.as(null);bb.mesh(beam);beam.position.set(0,3.9,0);g.add(beam);W.beam=beam;
+ const q=new Batch();
+ // Massives Betonfundament & Stahl-Grundrahmen (Skid)
+ q.as('stone');
+ q.bx(4.8,0.28,3.6,'#7a7d80',0,0,0);
+ q.bx(2.6,0.22,2.6,'#6c7074',-3.3,0,-0.8);
+ q.as('metal');
+ for(const sz of[-0.68,0.68])q.bx(4.3,0.16,0.18,'#2f343b',0,0.28,sz);
+ for(const sx of[-1.9,-0.8,0.8,1.9])q.bx(0.18,0.14,1.52,'#2f343b',sx,0.28,0);
+ // Samson Post (massiver A-Rahmen-Stahlbock, dessen 4 schräge Träger exakt im oberen Drehlager bei (0, 3.85, 0) zusammenlaufen!)
+ [[-0.85,-0.58],[0.85,-0.58],[0.85,0.58],[-0.85,0.58]].forEach(p=>{
+  const bx=p[0],bz=p[1];
+  q.add(GEO.box(),'#3d434c',bx*0.5,2.10,bz*0.64,0.18,3.65,0.18,bz*0.11,0,bx*0.23);
+  q.bx(0.32,0.12,0.32,'#2b3036',bx,0.36,bz);
+ });
+ // Horizontale & diagonale Querstreben am A-Rahmen-Stahlbock
+ for(let i=0;i<4;i++){
+  const y=1.05+i*0.72,f=1-i*0.21;
+  const wx=1.68*f,wz=1.14*f;
+  q.bx(wx,0.09,0.09,'#4b525c',0,y,-wz*0.5);
+  q.bx(wx,0.09,0.09,'#4b525c',0,y,wz*0.5);
+  q.bx(0.09,0.09,wz,'#4b525c',-wx*0.5,y,0);
+  q.bx(0.09,0.09,wz,'#4b525c',wx*0.5,y,0);
+ }
+ // Oberer Drehlagerbock (Saddle Bearing) exakt auf Höhe y=3.65..4.10 (wo W.beam auf y=3.90 gelagert ist!)
+ q.bx(0.76,0.28,0.92,'#2b3036',0,3.62,0);
+ q.bx(0.58,0.38,0.18,'#b83b2b',0,3.76,-0.36);
+ q.bx(0.58,0.38,0.18,'#b83b2b',0,3.76,0.36);
+ q.cyc(0.15,1.06,'#8a929a',0,3.90,0,16,Math.PI/2,0,0);
+ // Vorne rechts (x=+1.85, z=0): Bohrlochkopf (Wellhead / Stopfbuchse), Flansche, Manometer & senkrechte polierte Kolbenstange/Seil bis in den Pferdekopf
+ q.cy(0.32,0.38,'#2c3036',1.85,0.28,0,16);
+ q.cy(0.38,0.10,'#b83b2b',1.85,0.62,0,16);
+ q.cy(0.22,0.55,'#3d434c',1.85,0.72,0,16);
+ q.cy(0.28,0.08,'#b83b2b',1.85,1.22,0,16);
+ q.cy(0.12,0.42,'#5a626c',1.85,1.30,0,12);
+ // Polierte Kolbenstange & Stahlseil (reicht von y=1.5 bis y=3.95 direkt in den Pferdekopf)
+ q.cy(0.038,2.45,'#d0d6dc',1.88,1.50,0,10);
+ // Seitliches Ventil & Manometer am Bohrlochkopf
+ q.cyc(0.09,0.46,'#3d434c',1.85,0.95,0.28,12,Math.PI/2,0,0);
+ q.cyc(0.13,0.04,'#b83b2b',1.85,0.95,0.52,12,0,0,0);
+ q.cyc(0.09,0.04,'#f4efe4',1.85,1.18,0.36,12,0,0,0);
+ // Hinten links (x=-1.65, z=0): Massives Getriebegehäuse (Gearbox), Elektromotor, Kurbelwelle, Kurbelwangen (Cranks) & Pleuelstangen (Pitman Arms)
+ q.bx(1.15,0.96,0.78,'#2f353d',-1.65,0.36,0);
+ q.bx(0.95,0.32,0.68,'#3d444e',-1.65,1.30,0);
+ q.cyc(0.14,1.18,'#8a929a',-1.65,1.15,0,16,Math.PI/2,0,0);
+ // Zwei große Kurbelwangen mit schweren gelb-schwarzen Gegengewichten links/rechts am Getriebe
+ for(const sz of[-0.52,0.52]){
+  q.bx(0.92,0.34,0.12,'#b83b2b',-1.72,0.98,sz,0,0.35,0);
+  q.bx(0.56,0.48,0.16,'#d8a028',-2.05,0.82,sz,0,0.35,0);
+  // Pleuelstangen (Pitman Arms) von der Kurbel hoch zum hinteren Ende des Waagebalkens
+  q.add(GEO.box(),'#5a626c',-1.76,2.48,sz*0.72,0.09,2.65,0.09,0,0,-0.06);
+ }
+ // Elektromotor mit Kühlrippen & Schaltkasten neben dem Getriebe
+ q.cyc(0.28,0.72,'#28465c',-1.55,0.68,0.86,16,0,0,Math.PI/2);
+ q.bx(0.55,0.28,0.48,'#23272c',-1.55,0.36,0.86);
+ q.bx(0.38,0.62,0.28,'#7a828c',-0.82,0.42,0.92);
+ // Rohrleitung (Pipeline) vom Bohrlochkopf zum Rohöltank
+ q.cyc(0.075,5.1,'#393f46',-0.7,0.52,-0.55,12,0,0,Math.PI/2);
+ q.cyc(0.075,0.65,'#393f46',1.85,0.52,-0.28,12,Math.PI/2,0,0);
+ for(const px of[-2.2,-0.8,0.6])q.bx(0.14,0.32,0.18,'#555b62',px,0.22,-0.55);
+ // Realistischer genieteter Stahl-Rohöltank links (x=-3.3, z=-0.8) statt des weißen Spielzeug-Zylinders mit rotem Kegelhütchen
+ q.cy(1.08,2.25,'#2f3d36',-3.3,0.22,-0.8,24);
+ for(let i=0;i<4;i++)q.cy(1.105,0.06,'#1f2824',-3.3,0.45+i*0.55,-0.8,24);
+ q.cy(1.12,0.08,'#d8a028',-3.3,1.85,-0.8,24);
+ q.sp(1.08,'#384740',-3.3,2.44,-0.8,1,0.22,1);
+ q.cy(0.28,0.16,'#232c28',-3.3,2.58,-0.8,16);
+ q.cy(0.32,0.05,'#4a545c',-3.3,2.72,-0.8,16);
+ // Steigleiter & Füllstandsanzeige am Öltank
+ for(const lz of[-0.96,-0.64])q.bx(0.04,2.25,0.04,'#4f565e',-2.20,0.22,lz);
+ for(let y=0.45;y<=2.35;y+=0.32)q.bx(0.035,0.03,0.32,'#687078',-2.18,y,-0.8);
+ q.bx(0.08,1.65,0.12,'#e6dfd0',-3.3,0.55,0.29);
+ q.bx(0.04,1.15,0.13,'#b83b2b',-3.3,0.60,0.30);
+ // Ölfässer auf Abstellfläche rechts
+ for(let i=0;i<3;i++){
+  const fx=3.2+(i%2)*0.88,fz=-0.95+i*0.88;
+  q.cy(0.38,0.94,i%2?'#262a30':'#9e3528',fx,0,fz,18);
+  q.cy(0.395,0.05,'#d4a028',fx,0.32,fz,18);
+  q.cy(0.395,0.05,'#d4a028',fx,0.62,fz,18);
+  q.cy(0.36,0.02,'#454b52',fx,0.94,fz,18);
+ }
+ // Sicherheits-Absperrbalken vorne
+ for(let i=0;i<6;i++)q.bx(0.24,0.20,0.10,i%2?'#d8a028':'#24272c',-1.5+i*0.6,0.30,1.72);
+ q.as(null);q.mesh(g);
+ // Beweglicher Waagebalken (Walking Beam + gebogener Pferdekopf + Querhaupt), Drehpunkt exakt im Sattellager (0, 3.90, 0)
+ const beam=new THREE.Group();const bb=new Batch();bb.as('metal');
+ bb.bx(3.85,0.28,0.32,'#b83b2b',0,0,0);
+ bb.bx(3.90,0.06,0.42,'#8f2b1e',0,0.14,0);
+ bb.bx(3.90,0.06,0.42,'#8f2b1e',0,-0.14,0);
+ bb.cyc(0.18,0.62,'#3a4048',0,0,0,16,Math.PI/2,0,0);
+ // Gebogener Pferdekopf (Horsehead) vorne bei x=+1.85 mit gelb-schwarzer Warnmarkierung und Seilführung
+ bb.bx(0.48,0.65,0.46,'#d8a028',1.78,0.02,0,0,0,-0.18);
+ bb.bx(0.52,0.72,0.48,'#b83b2b',1.92,-0.45,0,0,0,0.12);
+ bb.bx(0.42,0.52,0.44,'#d8a028',1.86,-0.88,0,0,0,0.28);
+ bb.bx(0.16,1.35,0.50,'#262a30',2.08,-0.42,0);
+ // Hinten bei x=-1.76: Querhaupt (Equalizer Bar) & Gelenkbolzen zu den Pleuelstangen
+ bb.bx(0.46,0.34,1.12,'#3a4048',-1.76,-0.16,0);
+ bb.cyc(0.10,1.22,'#8a929a',-1.76,-0.16,0,12,Math.PI/2,0,0);
+ bb.bx(0.18,0.95,0.18,'#5a626c',-1.76,-0.65,-0.38);
+ bb.bx(0.18,0.95,0.18,'#5a626c',-1.76,-0.65,0.38);
+ bb.as(null);bb.mesh(beam);
+ beam.position.set(0,3.90,0);g.add(beam);W.beam=beam;
  const osb=new Batch();osb.as('metal');for(const sx of[-0.85,0.85])osb.bx(0.08,2.2,0.08,'#4b5058',sx,0,2.34);osb.as(null);osb.mesh(g);
  signPlane('ÖLQUELLE\nÖl für Generatoren',2.3,0.82,0,1.95,2.4,0,g);
- g.lab=labelSprite();g.lab.position.set(0,7.2,0);g.add(g.lab);W.well=g;addCol(44.2,-21.8,47.8,-18.2,'out');
+ g.lab=labelSprite();g.lab.position.set(0,6.2,0);g.add(g.lab);W.well=g;addCol(42.0,-22.2,49.8,-17.8,'out');
 }
 
 // ===== Dorf =====
@@ -1577,8 +1796,8 @@ function rebuildCellar(){
 }
 
 function zoneOf(L,x,z,w,d){
- if(L==='out'){return x-w/2>=12.6&&x+w/2<=31.4&&z-d/2>=-11.4&&z+d/2<=3.4;}
- const r=W.celRectNow;return x-w/2>=r[0]+0.6&&x+w/2<=r[2]-0.6&&z-d/2>=r[1]+0.6&&z+d/2<=r[3]-0.6;
+ if(L==='out'){return x-w/2>=12.4&&x+w/2<=31.6&&z-d/2>=-11.6&&z+d/2<=3.6;}
+ const r=W.celRectNow;return x-w/2>=r[0]+0.35&&x+w/2<=r[2]-0.35&&z-d/2>=r[1]+0.35&&z+d/2<=r[3]-0.35;
 }
 function buildAll(){
  initRenderer();buildEnvironment();buildHalle();buildHaus();buildField();buildForest();buildOil();buildVillage();spawnVillageNpcs();buildTierhof();buildTrafik();buildCellar();
@@ -1594,6 +1813,7 @@ const ROLES={verk:'Verkäufer:in',ernte:'Erntehelfer:in',traeger:'Lagerträger:i
 const ROLE_DESC={verk:'bedient Kunden sofort an der Kassa',ernte:'sät und erntet Feld & UV-Beete, bringt Rohtabak ins Rohlager',traeger:'trägt Waren selbstständig zwischen Maschinen und Regalen',holz:'fällt Bäume und füllt den Holzstapel'};
 let routeMode=null, ghost=null, selTarget=null, nearTarget=null;
 const mach={}; // id -> machine runtime
+const crates={}; // id -> crate runtime
 const nodeCache={};
 const jobs=[];
 const customers=[];
@@ -1687,14 +1907,23 @@ function computeTargets(){
 }
 function reachable(i){const p=interPos(i);return Math.hypot(p.x-player.x,p.z-player.z)<=i.reach+(i.big||0);}
 function doInteract(t){
+ if(S.w.carry&&S.w.carry.kind==='machine'){
+  if(!ghost)makeGhost(S.w.carry.type);
+  updateGhost();
+  if(!ghost.userData.ok&&t&&t.act&&reachable(t)&&t.obj===W.werkbank){t.act(t);return;}
+  placeGhost();
+  return;
+ }
  t=t||selTarget||nearTarget;if(!t)return;
- if(ghost&&S.w.carry&&S.w.carry.kind==='machine'){placeGhost();return;}
  if(!reachable(t)){toast('Zu weit weg – geh etwas näher heran.');return;}
  if(routeMode&&t.mid&&mach[t.mid].type==='hub'){startRouteMode();return;}
  if(routeMode&&t.rid){routeClick(t);return;}
  if(t.act)t.act(t);
 }
-function doAlt(t){t=t||selTarget||nearTarget;if(t&&t.alt&&reachable(t))t.alt(t);}
+function doAlt(t){
+ if(S.w.carry&&S.w.carry.kind==='machine'){dropMachineCrate();return;}
+ t=t||selTarget||nearTarget;if(t&&t.alt&&reachable(t))t.alt(t);
+}
 function doCare(){const t=selTarget||nearTarget;if(t&&t.mid&&reachable(t)){const m=mach[t.mid];if(m.type==='hub'){clearRoutes();return;}m.wear=0;toast(MT[m.type].n+' ist frisch gepflegt.');S.goals.care=true;}}
 function hintFor(t){
  if(!t)return '';let h=(typeof t.hint==='function'?t.hint(t):t.hint)||'';
@@ -1719,7 +1948,7 @@ function updateCarryVis(){
  else if(c.kind==='machine'){const m=MT[c.type];box(0.6,0.5,0.6,m.col,0,0,0,g);if(!ghost)makeGhost(c.type);}
  else if(c.kind==='pv'){for(let i=0;i<c.n;i++)box(0.6,0.06,0.9,'#2a4a8a',0,i*0.1,0,g);}
 }
-function carryLabel(){const c=S.w.carry;if(!c)return '';if(c.kind==='item')return c.n+'× '+itemName(c.id);if(c.kind==='machine')return c.n+'× '+MT[c.type].n+' (aufstellen: Klick oder E · drehen: R)';if(c.kind==='pv')return c.n+'× PV-Modul (montieren an der Dachleiter, Ostseite der Halle)';return '';}
+function carryLabel(){const c=S.w.carry;if(!c)return '';if(c.kind==='item')return c.n+'× '+itemName(c.id);if(c.kind==='machine')return c.n+'× '+MT[c.type].n+' (Aufstellen: Klick / E · Drehen: R · Als Paket abstellen: Rechtsklick / X)';if(c.kind==='pv')return c.n+'× PV-Modul (montieren an der Dachleiter, Ostseite der Halle)';return '';}
 
 // ---------- Maschinen ----------
 function buildMachineMesh(type){
@@ -1799,27 +2028,170 @@ function placeValid(type,x,z,r,L){
  for(const c of colliders){if(c.off||c.L!==L)continue;if(x-w/2<c.x2-0.02&&x+w/2>c.x1+0.02&&z-d/2<c.z2-0.02&&z+d/2>c.z1+0.02)return false;}
  return true;
 }
-function updateGhost(){
- if(!ghost||!S.w.carry||S.w.carry.kind!=='machine'){if(ghost){ghost.visible=false;}return;}
- const ray=Ctl.aimRay();if(!ray){ghost.visible=false;return;}
- const fy=FY(player.L)+0.05;if(Math.abs(ray.d.y)<0.02){ghost.visible=false;return;}
- const t=(fy-ray.o.y)/ray.d.y;if(t<0||t>60){ghost.visible=false;return;}
- let x=ray.o.x+ray.d.x*t,z=ray.o.z+ray.d.z*t;
- const dist=Math.hypot(x-player.x,z-player.z);if(dist>9){x=player.x+(x-player.x)*9/dist;z=player.z+(z-player.z)*9/dist;}
- const r=ghost.userData.rot,[w,d]=dims(ghost.userData.type,r);
+function snapGrid(x,z,w,d){
  x=Math.round(x*2)/2;z=Math.round(z*2)/2;if(w%1)x=Math.round(x-0.5)+0.5;if(d%1)z=Math.round(z-0.5)+0.5;
+ return [x,z];
+}
+function updateGhost(){
+ if(!S.w.carry||S.w.carry.kind!=='machine'){if(ghost){ghost.visible=false;}return;}
+ if(!ghost||ghost.userData.type!==S.w.carry.type)makeGhost(S.w.carry.type);
+ const ray=Ctl.aimRay();const fy=FY(player.L)+0.05;
+ let x,z;
+ if(ray&&ray.d.y<-0.08){
+  const t=(fy-ray.o.y)/ray.d.y;
+  if(t>0&&t<=9){x=ray.o.x+ray.d.x*t;z=ray.o.z+ray.d.z*t;}
+ }
+ if(x===undefined){
+  x=player.x-Math.sin(player.yaw)*3.5;
+  z=player.z-Math.cos(player.yaw)*3.5;
+ }
+ const dist=Math.hypot(x-player.x,z-player.z);
+ if(dist>8.5){x=player.x+(x-player.x)*8.5/dist;z=player.z+(z-player.z)*8.5/dist;}
+ if(dist<1.8){x=player.x-Math.sin(player.yaw)*2.8;z=player.z-Math.cos(player.yaw)*2.8;}
+ const r=ghost.userData.rot,type=ghost.userData.type,[w,d]=dims(type,r);
+ [x,z]=snapGrid(x,z,w,d);
+ let ok=placeValid(type,x,z,r,player.L);
+ if(!ok){
+  const offs=[[0,-0.5],[0,0.5],[-0.5,0],[0.5,0],[-0.5,-0.5],[0.5,-0.5],[-0.5,0.5],[0.5,0.5],[0,-1],[0,1],[-1,0],[1,0]];
+  for(const [ox,oz] of offs){
+   const [nx,nz]=snapGrid(x+ox,z+oz,w,d);
+   if(placeValid(type,nx,nz,r,player.L)){x=nx;z=nz;ok=true;break;}
+  }
+ }
  ghost.visible=true;ghost.position.set(x,FY(player.L),z);ghost.rotation.y=r?Math.PI/2:0;
- const ok=placeValid(ghost.userData.type,x,z,r,player.L);ghost.userData.ok=ok;ghost.userData.gm.color.set(ok?'#6fe06f':'#e86a6a');
+ ghost.userData.ok=ok;ghost.userData.gm.color.set(ok?'#6fe06f':'#e86a6a');
  ghost.userData.x=x;ghost.userData.z=z;
 }
-function rotateGhost(){if(ghost)ghost.userData.rot=1-ghost.userData.rot;}
-function cancelGhost(){/* Maschine bleibt in der Hand */}
+function rotateGhost(){if(ghost){ghost.userData.rot=1-ghost.userData.rot;updateGhost();}}
+function cancelGhost(){if(S.w.carry&&S.w.carry.kind==='machine')dropMachineCrate();}
 function placeGhost(){
  const c=S.w.carry;if(!ghost||!c||c.kind!=='machine')return;
- if(!ghost.userData.ok){toast('Hier ist kein Platz. Maschinen stehen nur auf freier Fläche in der Halle oder im Keller.');return;}
+ if(!ghost.userData.ok){toast('Hier ist zu wenig Platz – gehe auf eine freie Fläche oder stelle sie mit X / Rechtsklick als Paket ab.');return;}
  createMachine(c.type,ghost.userData.x,ghost.userData.z,ghost.userData.rot,player.L);
  c.n--;if(c.n<=0){S.w.carry=null;}updateCarryVis();
  toast(MT[c.type].n+' aufgestellt.');
+}
+function buildCrateMesh(type){
+ const T=MT[type]||MT.dry,g=new THREE.Group(),b=new Batch();
+ b.as('wood');
+ for(const kz of[-0.32,0,0.32])b.bx(0.86,0.07,0.10,'#8c6239',0,0,kz);
+ for(let k=0;k<5;k++)b.bx(0.86,0.025,0.14,k%2?'#b88c58':'#a67b48',0,0.07,-0.32+k*0.16);
+ b.bx(0.78,0.58,0.78,'#c89e68',0,0.095,0);
+ for(const sx of[-0.37,0.37])for(const sz of[-0.37,0.37])b.bx(0.06,0.60,0.06,'#7d5630',sx,0.09,sz);
+ for(const sy of[0.12,0.64]){
+  b.bx(0.82,0.05,0.04,'#7d5630',0,sy,-0.38);b.bx(0.82,0.05,0.04,'#7d5630',0,sy,0.38);
+  b.bx(0.04,0.05,0.82,'#7d5630',-0.38,sy,0);b.bx(0.04,0.05,0.82,'#7d5630',0.38,sy,0);
+ }
+ b.as('metal');
+ for(const sx of[-0.22,0.22])b.bx(0.035,0.61,0.83,'#2b2f36',sx,0.09,0);
+ b.as('paint');
+ b.bx(0.83,0.045,0.83,'#e0b030',0,0.38,0);
+ b.bx(0.28,0.18,0.83,T.col||'#d89a50',0,0.44,0);
+ b.as('wood');
+ for(const sx of[-0.26,0.26])b.bx(0.05,0.42,0.05,'#5c3e22',sx,0.66,-0.28);
+ b.as(null);b.mesh(g);
+ signPlane('PAKET: '+T.n+'\\nE: Aufnehmen · X: Auspacken',0.92,0.32,0,1.02,-0.25,0,g,'#fff5dc','#4a2e16');
+ g.userData.lab=labelSprite();g.userData.lab.position.set(0,1.52,0);g.add(g.userData.lab);
+ setLabel(g.userData.lab,'Paket: '+T.n,'E: Aufnehmen · X: Auspacken','#4a3526');
+ return g;
+}
+function crateValid(x,z,L){
+ const r=0.42;
+ if(L==='cel'){
+  const rc=W.celRectNow||celRect(S.w.lvl);
+  if(x-r<rc[0]+0.25||x+r>rc[2]-0.25||z-r<rc[1]+0.25||z+r>rc[3]-0.25)return false;
+ }
+ if(Math.hypot(x-player.x,z-player.z)<0.95)return false;
+ for(const c of colliders){
+  if(c.off||c.L!==L)continue;
+  if(x-r<c.x2-0.02&&x+r>c.x1+0.02&&z-r<c.z2-0.02&&z+r>c.z1+0.02)return false;
+ }
+ return true;
+}
+function dropMachineCrate(){
+ const c=S.w.carry;if(!c||c.kind!=='machine')return false;
+ const type=c.type,L=player.L,fx=-Math.sin(player.yaw),fz=-Math.cos(player.yaw),rx=Math.cos(player.yaw),rz=-Math.sin(player.yaw);
+ let px=null,pz=null;
+ const dists=[1.8,2.3,2.8,1.4,3.3];
+ const sides=[0,0.6,-0.6,1.1,-1.1,1.6,-1.6];
+ for(const d of dists){
+  for(const s of sides){
+   const tx=Math.round((player.x+fx*d+rx*s)*2)/2;
+   const tz=Math.round((player.z+fz*d+rz*s)*2)/2;
+   if(crateValid(tx,tz,L)){px=tx;pz=tz;break;}
+  }
+  if(px!==null)break;
+ }
+ if(px===null){
+  for(let r=1.2;r<=4.5&&px===null;r+=0.5){
+   for(let a=0;a<12;a++){
+    const ang=player.yaw+a*Math.PI/6;
+    const tx=Math.round((player.x-Math.sin(ang)*r)*2)/2;
+    const tz=Math.round((player.z-Math.cos(ang)*r)*2)/2;
+    if(crateValid(tx,tz,L)){px=tx;pz=tz;break;}
+   }
+  }
+ }
+ if(px===null){px=Math.round((player.x+fx*1.5)*2)/2;pz=Math.round((player.z+fz*1.5)*2)/2;}
+ createCrate(type,px,pz,L);
+ c.n--;if(c.n<=0)S.w.carry=null;
+ updateCarryVis();
+ toast(MT[type].n+' als Paket abgestellt (mit E wieder aufnehmen).');
+ saveState();
+ return true;
+}
+function createCrate(type,x,z,L,saved){
+ S.w.crates=S.w.crates||[];
+ const cr=saved||{id:'c'+(S.w.nid++),type,x,z,L};
+ if(!saved)S.w.crates.push(cr);
+ crates[cr.id]=cr;const T=MT[type]||MT.dry;
+ const g=buildCrateMesh(type);g.position.set(cr.x,FY(cr.L),cr.z);(cr.L==='cel'?celG:outG).add(g);cr.g=g;
+ cr.col=addCol(cr.x-0.4,cr.z-0.4,cr.x+0.4,cr.z+0.4,cr.L,cr);
+ cr.inter=addInter({obj:g,L:cr.L,cid:cr.id,aim:1.0,reach:4.5,
+  name:()=>'Maschinen-Paket: '+T.n,
+  desc:()=>'Verpackte Maschine ('+T.desc+'). Nimm das Paket mit E wieder auf oder packe es mit X direkt hier aus.',
+  hint:()=>'E: Paket aufnehmen ('+T.n+')  ·  X: direkt hier auspacken & aufstellen',
+  act:()=>pickCrate(cr),
+  alt:()=>unpackCrate(cr)});
+ try{if(typeof gPatchTree==='function')gPatchTree(g);}catch(e){}
+ return cr;
+}
+function pickCrate(cr){
+ const T=MT[cr.type]||MT.dry,c=S.w.carry;
+ if(c&&!(c.kind==='machine'&&c.type===cr.type)){toast('Erst die Hände frei machen, dann das Paket aufnehmen.');return;}
+ if(c&&c.n>=4){toast('Du trägst schon genug Maschinen.');return;}
+ removeCrate(cr);
+ if(c)c.n++;else S.w.carry={kind:'machine',type:cr.type,n:1};
+ updateCarryVis();updateGhost();
+ toast('Paket aufgenommen: '+T.n+' (mit E / Klick aufstellen oder mit X wieder als Paket abstellen).');
+ saveState();
+}
+function unpackCrate(cr){
+ const T=MT[cr.type]||MT.dry,L=cr.L;
+ cr.col.off=true;
+ let placed=false;
+ for(const r of[0,1]){
+  const [w,d]=dims(cr.type,r);
+  const [sx,sz]=snapGrid(cr.x,cr.z,w,d);
+  if(placeValid(cr.type,sx,sz,r,L)){
+   removeCrate(cr);
+   createMachine(cr.type,sx,sz,r,L);
+   toast(T.n+' ausgepackt und aufgestellt.');
+   saveState();
+   placed=true;break;
+  }
+ }
+ if(!placed){
+  cr.col.off=false;
+  toast('Hier ist zu wenig Platz zum Auspacken – nimm das Paket mit E auf und stelle es auf einer freien Fläche in Halle oder Keller auf.');
+ }
+}
+function removeCrate(cr){
+ if(S.w.crates){const i=S.w.crates.indexOf(cr);if(i>=0)S.w.crates.splice(i,1);}
+ delete crates[cr.id];
+ if(cr.g&&cr.g.parent)cr.g.parent.remove(cr.g);
+ const ci=colliders.indexOf(cr.col);if(ci>=0)colliders.splice(ci,1);
+ removeInter(cr.inter);
 }
 function createMachine(type,x,z,r,L,saved){
  const m=saved||{id:'m'+(S.w.nid++),type,x,z,r,L,q:0,q2:0,o:0,pr:0,wear:0,st:0,bt:0};
@@ -2410,7 +2782,7 @@ function openLog(){
 }
 function helpText(){
  const k=TP?'<li><b>WASD</b> gehen · <b>Linksklick</b> auf Boden: hinlaufen · auf Objekt: hinlaufen und benutzen</li><li><b>←/→ oder rechte Maustaste ziehen</b> Kamera drehen · <b>Mausrad</b> zoomen</li><li><b>Rechtsklick</b> auf Maschine: aufheben</li>':'<li><b>W A S D</b> gehen · <b>Maus</b> umsehen · <b>Shift</b> flott gehen · <b>Linksklick oder E</b> benutzen · <b>Rechtsklick</b> aufheben</li>';
- return '<ul class="help">'+k+'<li><b>E</b> benutzen, nehmen, einlegen · <b>X</b> Maschine aufheben · <b>G</b> Maschine pflegen · <b>R</b> beim Aufstellen drehen</li><li><b>1–7</b> oder <b>, / .</b> Zeittempo (Pausiert / Sehr langsam / Langsam / Normal / Schnell)</li><li><b>L</b> Tagebuch · <b>P</b> Fotomodus · <b>M</b> Musik an/aus · <b>H</b> oder <b>Esc</b> dieses Menü</li></ul>';
+ return '<ul class="help">'+k+'<li><b>E</b> benutzen, nehmen, einlegen, aufstellen · <b>X / Rechtsklick</b> Maschine aufheben bzw. beim Tragen als Paket abstellen · <b>G</b> Maschine pflegen · <b>R</b> beim Aufstellen drehen</li><li><b>1–7</b> oder <b>, / .</b> Zeittempo (Pausiert / Sehr langsam / Langsam / Normal / Schnell)</li><li><b>L</b> Tagebuch · <b>P</b> Fotomodus · <b>M</b> Musik an/aus · <b>H</b> oder <b>Esc</b> dieses Menü</li></ul>';
 }
 function glossary(){
  const G=[['Trafik','Traditionelles österreichisches Tabakfachgeschäft mit Zeitungen, Magazinen und Lotto.'],['Kassa','Das Bargeld in deiner Ladenkassa.'],['Rohtabak','Geerntete, noch unverarbeitete Tabakblätter vom Feld.'],['Kiste','Eine Holzkiste fasst 10 Einheiten einer Ware.'],['Charge','Ein Durchgang an einer Maschine (jeweils 10 Stück).'],['FP','Tüftler-Punkte für neue Rezepte und Geräte.'],['USt','Umsatzsteuer (20 % auf Verkäufe, abzüglich Vorsteuer aus Einkäufen).'],['Tabaksteuer','Steuer auf Tabakwaren, wird beim Verkauf in der Trafik fällig.'],['Trafikanten-Spanne','Der Handelsanteil der Trafik am Verkaufspreis.'],['Herstellkosten','Was Rohstoffe und Fertigung je Packung kosten.'],['Abschreibung','Anschaffungskosten für Geräte werden über 10 Jahre verteilt.'],['ESt / KöSt','Einkommensteuer (Einzelunternehmen) bzw. Körperschaftsteuer (GmbH).'],['PV','Sonnenpaneele auf dem Hallendach, die tagsüber Strom liefern.'],['Maschinen-Lampe','Grün = läuft · Warmgelb = Ausgabe bereit zum Abholen · Grau = wartet auf Rohstoff.']];
@@ -2479,7 +2851,7 @@ function updateHUD(){
 const escH=x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 function updateHint(){
  const t=selTarget||nearTarget,c=S.w.carry;let name='',desc='',key='';
- if(ghost&&c&&c.kind==='machine'){const T=MT[c.type];name=T.n+' aufstellen';desc=T.desc;key=ghost.userData.ok?'E: hier aufstellen · R: drehen':'Hier kein Platz – wähle eine freie Stelle in Halle oder Keller';}
+ if(ghost&&c&&c.kind==='machine'){const T=MT[c.type];name=T.n+' aufstellen';desc=T.desc;key=ghost.userData.ok?'E / Klick: hier aufstellen · R: drehen · X / Rechtsklick: als Paket abstellen':'Hier zu eng für die Maschine – X / Rechtsklick: als Paket abstellen · R: drehen';}
  else if(t){name=t.name?t.name():'';desc=t.desc?t.desc():'';key=hintFor(t);}
  const k=name+'|'+desc+'|'+key;
  if(k!==lastHint){lastHint=k;const kk=escH(key).replace(/(^|[\s(·])([EXGR]):/g,'$1<kbd>$2</kbd>');
@@ -2542,28 +2914,70 @@ function buildTierhof(){
  fenceLine(F.x1,z0,F.x2,z0);fenceLine(F.x1,z1,F.x2,z1);fenceLine(F.x1,z0,F.x1,z1);fenceLine(F.x2,z0,F.x2,24.6);fenceLine(F.x2,28.6,F.x2,z1);
  addCol(F.x1-.2,z0-.2,F.x2+.2,z0+.2,'out');addCol(F.x1-.2,z1-.2,F.x2+.2,z1+.2,'out');addCol(F.x1-.2,z0,F.x1+.2,z1,'out');addCol(F.x2-.2,z0,F.x2+.2,24.6,'out');addCol(F.x2-.2,28.6,F.x2+.2,z1,'out');
  const t=new Batch();
- // Stall (vorne offen)
- const bx1=-57.2,bx2=-48.8,bz1=15.1,bz2=20.1,bh=3.0,bcz=(bz1+bz2)/2,bw=bx2-bx1;
- t.as('wood');t.bx(bw,bh,0.3,'#c8553d',F.cx,0,bz1);t.bx(0.3,bh,bz2-bz1,'#c8553d',bx1,0,bcz);t.bx(0.3,bh,bz2-bz1,'#c8553d',bx2,0,bcz);
- for(let i=0;i<8;i++)t.bx(0.12,bh,0.06,'#a8402c',bx1+0.5+i*(bw-1)/7,0,bz1+0.18);
- [bx1,bx2].forEach(x=>{t.bx(0.45,bh+0.25,0.45,'#f6efe0',x,0,bz2);t.bx(0.45,bh+0.25,0.45,'#f6efe0',x,0,bz1);});
- const rise=1.9,half=(bz2-bz1)/2+0.7,ang=Math.atan(rise/half),len=Math.hypot(half,rise)+0.2;
- t.bx(bw+1.0,0.18,len,'#8a4f3a',F.cx,bh+rise/2+0.05,bcz-half/2,0,0,-ang);t.bx(bw+1.0,0.18,len,'#8a4f3a',F.cx,bh+rise/2+0.05,bcz+half/2,0,0,ang);
- t.bx(bw+1.1,0.16,0.3,'#5a3a2a',F.cx,bh+rise+0.05,bcz);
- [bx1,bx2].forEach(x=>{for(let k=0;k<4;k++){const wd=(bz2-bz1)*(1-k/4.2);t.bx(0.3,0.5,wd,'#c8553d',x,bh+k*0.5,bcz);}});
- t.as(null);t.bx(bw,0.2,0.3,'#f6efe0',F.cx,bh-0.2,bz2);
- // Gebundene Quader- & Rund-Heuballen im Stall (statt .ico-Klumpen)
- const addHayBale=(hx,hy,hz,ry)=>{
-  t.bx(0.96,0.56,0.72,'#dfc058',hx,hy,hz,0,ry||0,0);
-  t.bx(0.98,0.58,0.03,'#9e7b42',hx-0.22,hy,hz,0,ry||0,0);
-  t.bx(0.98,0.58,0.03,'#9e7b42',hx+0.22,hy,hz,0,ry||0,0);
- };
- addHayBale(-55.8,0,16.4,0.04);addHayBale(-54.7,0,16.4,-0.05);addHayBale(-55.25,0.56,16.4,0.08);
- addHayBale(-52.0,0,16.4,0.12);
- // Rundballen rechts im Stall
- t.cyc(0.52,0.92,'#e2c45c',-50.2,0.52,16.8,12,0,0,Math.PI/2);
- t.cyc(0.53,0.04,'#9e7b42',-50.42,0.52,16.8,12,0,0,Math.PI/2);
- t.cyc(0.53,0.04,'#9e7b42',-49.98,0.52,16.8,12,0,0,Math.PI/2);
+ // Stall (vorne offen, detaillierte Holzplanken-Bauweise mit Fachwerk, Fenstern & sauberem Satteldach ohne herausragende Giebelklötze)
+ const bx1=-57.2,bx2=-48.8,bz1=15.1,bz2=20.1,bh=3.0,bcz=(bz1+bz2)/2,bw=bx2-bx1,bd=bz2-bz1;
+ t.as('stone');
+ t.bx(bw+0.36,0.34,0.42,'#8d8478',F.cx,0,bz1);
+ t.bx(0.42,0.34,bd+0.36,'#8d8478',bx1,0,bcz);
+ t.bx(0.42,0.34,bd+0.36,'#8d8478',bx2,0,bcz);
+ t.as('wood');
+ // Rückwand & Seitenwände mit gestaffelten Holzbohlen und Deckleisten
+ t.bx(bw,bh-0.3,0.28,'#9e4231',F.cx,0.3,bz1);
+ t.bx(0.28,bh-0.3,bd,'#9e4231',bx1,0.3,bcz);
+ t.bx(0.28,bh-0.3,bd,'#9e4231',bx2,0.3,bcz);
+ for(let r=0;r<6;r++){
+  const py=0.36+r*0.44,c=r%2?'#a84634':'#923b2b';
+  t.bx(bw+0.04,0.38,0.32,c,F.cx,py,bz1);
+  t.bx(0.32,0.38,bd+0.04,c,bx1,py,bcz);
+  t.bx(0.32,0.38,bd+0.04,c,bx2,py,bcz);
+ }
+ // Vertikale Deckleisten & Fachwerk-Streben auf der Rückwand (außen z=bz1-0.16 und innen z=bz1+0.16)
+ for(let i=0;i<=8;i++){
+  const px=bx1+0.4+i*(bw-0.8)/8;
+  t.bx(0.11,bh-0.28,0.36,'#6e3d24',px,0.3,bz1);
+ }
+ for(const ry of[0.32,1.55,bh-0.18]){
+  t.bx(bw+0.22,0.14,0.38,'#5c3620',F.cx,ry,bz1);
+  t.bx(0.38,0.14,bd+0.22,'#5c3620',bx1,ry,bcz);
+  t.bx(0.38,0.14,bd+0.22,'#5c3620',bx2,ry,bcz);
+ }
+ // Zwei Stallfenster mit weißen Holzrahmen und Sprossen in der Rückwand
+ for(const wx of[F.cx-2.1,F.cx+2.1]){
+  t.bx(1.18,0.92,0.38,'#f0e6d2',wx,1.42,bz1);
+  t.as('glass');t.bx(0.96,0.70,0.40,'#4f6d82',wx,1.53,bz1);
+  t.as('wood');t.bx(0.06,0.74,0.42,'#f0e6d2',wx,1.53,bz1);t.bx(1.0,0.06,0.42,'#f0e6d2',wx,1.86,bz1);
+  t.bx(1.28,0.09,0.46,'#5c3620',wx,1.36,bz1);
+ }
+ // 4 massive Eckpfosten + Mittelpfosten (reichen exakt bis zur Traufe bh, ragen NICHT durch das Dach!)
+ [bx1,bx2].forEach(x=>{
+  t.bx(0.38,bh+0.04,0.38,'#f0e6d2',x,0,bz2);
+  t.bx(0.38,bh+0.04,0.38,'#f0e6d2',x,0,bz1);
+  t.bx(0.36,bh+0.02,0.36,'#6e3d24',x,0,bcz);
+ });
+ // Giebeldreiecke links/rechts sauber UNTER der Dachschräge gestuft (schauen nirgends durch die Dachhaut!)
+ const rise=1.85,half=bd/2+0.65,ang=Math.atan(rise/half),len=Math.hypot(half,rise)+0.18;
+ [bx1,bx2].forEach(x=>{
+  for(let k=0;k<6;k++){
+   const y0=bh+k*0.26,yTop=y0+0.26;
+   const maxHalf=Math.max(0.18,(1-(yTop-bh)/(rise-0.12))*(bd/2-0.15));
+   t.bx(0.28,0.27,maxHalf*2,k%2?'#a84634':'#923b2b',x,y0,bcz);
+  }
+ });
+ // Dachflächen mit Sparrenköpfen und Firstbalken (Parameter von bx ist (w,h,d,col,x,y,z,ry,rz,rx) -> Neigung um X ist der 10. Parameter!)
+ t.bx(bw+1.1,0.16,len,'#7a4430',F.cx,bh+rise/2-0.02,bcz-half/2+0.06,0,0,ang);
+ t.bx(bw+1.1,0.16,len,'#7a4430',F.cx,bh+rise/2-0.02,bcz+half/2-0.06,0,0,-ang);
+ for(let i=0;i<=6;i++){
+  const rx=bx1-0.2+i*(bw+0.4)/6;
+  t.bx(0.12,0.14,len+0.08,'#5c3620',rx,bh+rise/2-0.08,bcz-half/2+0.06,0,0,ang);
+  t.bx(0.12,0.14,len+0.08,'#5c3620',rx,bh+rise/2-0.08,bcz+half/2-0.06,0,0,-ang);
+ }
+ t.bx(bw+1.2,0.22,0.34,'#4e2f1e',F.cx,bh+rise-0.08,bcz);
+ t.bx(bw+0.3,0.22,0.36,'#f0e6d2',F.cx,bh-0.2,bz2);
+ t.as(null);
+ // Gebundene Quader- & Rund-Heuballen im Stall
+ addRectHayBale(t,-55.8,0,16.4,0.04);addRectHayBale(t,-54.7,0,16.4,-0.05);addRectHayBale(t,-55.25,0.54,16.4,0.08);
+ addRectHayBale(t,-52.0,0,16.4,0.12);
+ addRoundHayBale(t,-50.2,0,16.8,0.15,1.0);
  t.cy(0.35,0.7,'#c9c9d0',-50.8,0,19.3,10);t.cy(0.38,0.1,'#9a9aa5',-50.8,0.7,19.3,10);
  // Futtertrog, Wassertonne, eingefasste Mistgrube mit Strohmist-Schichten & Milchkannen
  t.bx(2.2,0.45,0.6,'#8a5a3a',-56.2,0,30.2);t.bx(2.0,0.1,0.4,'#e8c85a',-56.2,0.4,30.2);t.bx(0.12,0.6,0.12,'#6a4a2e',-57.1,0,30.2);t.bx(0.12,0.6,0.12,'#6a4a2e',-55.3,0,30.2);
@@ -3299,13 +3713,29 @@ function realFoliage(){const n=RQ.cards;if(!n)return;
    im.count=o.count;im.castShadow=true;im.receiveShadow=true;o.parent.add(im);return;}
   const sm=new THREE.Mesh(isCone?con:(i%2?sph2:sph),pick(o.material));if(!isCone){sm.scale.setScalar(r*1.08);o.scale.multiplyScalar(0.86);}else sm.scale.setScalar(1.1);sm.castShadow=false;sm.receiveShadow=true;o.add(sm);});}
 // ================= dichtes Gras mit Wind =================
-function bladeGeo(){const pos=[],col=[],R=rRand(5);
- for(let b=0;b<5;b++){const a=b*1.26+R()*0.5,ox=Math.cos(a)*0.07*R(),oz=Math.sin(a)*0.07*R(),h=0.2+R()*0.26,lean=0.06+R()*0.12,w=0.022+R()*0.012,la=a+R()*1.5;
-  const ca=Math.cos(la+1.57)*w,sa=Math.sin(la+1.57)*w,lx=Math.cos(la)*lean,lz=Math.sin(la)*lean;
-  const L=[[ox-ca,0,oz-sa,0.55],[ox+ca,0,oz+sa,0.55],[ox+lx*0.35-ca*0.7,h*0.5,oz+lz*0.35-sa*0.7,0.8],[ox+lx*0.35+ca*0.7,h*0.5,oz+lz*0.35+sa*0.7,0.8],[ox+lx,h,oz+lz,1.08]];
-  const tone=0.85+R()*0.3,yl=R()<0.2?1:0;
-  [0,1,2,1,3,2,2,3,4].forEach(k=>{const v=L[k];pos.push(v[0],v[1],v[2]);col.push(v[3]*tone*(1+yl*0.15),v[3]*tone,v[3]*tone*(1-yl*0.25));});}
- const g=geoFrom(pos,null,null,col);const nn=g.attributes.normal;for(let i=0;i<nn.count;i++)nn.setXYZ(i,0,1,0);return g;}
+function grassClumpTex(){
+ const S=128,c=mkCanvas(S,S),g=c.getContext('2d'),R=rRand(19);
+ g.clearRect(0,0,S,S);
+ for(let i=0;i<28;i++){
+  const bx=18+R()*(S-36),by=S-2,tx=bx+(R()-0.5)*46,ty=26+R()*62;
+  const cx=(bx+tx)*0.5+(R()-0.5)*16,cy=(by+ty)*0.5;
+  g.strokeStyle=i%3===0?'#527d39':(i%3===1?'#639146':'#74a353');
+  g.lineWidth=2.6-R()*1.1;g.lineCap='round';
+  g.beginPath();g.moveTo(bx,by);g.quadraticCurveTo(cx,cy,tx,ty);g.stroke();
+ }
+ const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return t;
+}
+function bladeGeo(){
+ const pos=[],uv=[],col=[],idx=[];
+ for(let p=0;p<2;p++){
+  const a=p*Math.PI/2+0.35,ca=Math.cos(a)*0.16,sa=Math.sin(a)*0.16,h=0.22,b=pos.length/3;
+  pos.push(-ca,0,-sa, ca,0,sa, ca,h,sa, -ca,h,-sa);
+  uv.push(0,0, 1,0, 1,1, 0,1);
+  col.push(0.68,0.68,0.68, 0.68,0.68,0.68, 1.0,1.0,1.0, 1.0,1.0,1.0);
+  idx.push(b,b+1,b+2, b,b+2,b+3);
+ }
+ const g=geoFrom(pos,null,uv,col,idx);const nn=g.attributes.normal;for(let i=0;i<nn.count;i++)nn.setXYZ(i,0,1,0);return g;
+}
 function grassFree(x,z){
  if(typeof GRASS_EX!=='undefined'&&GRASS_EX.some(r=>x>r[0]&&x<r[2]&&z>r[1]&&z<r[3]))return false;
  if((x>-38&&x<-11&&z>-30&&z<0)||(Math.abs(z-7)<3.2)||(x>10&&x<34&&z>-14&&z<6)||(x>-30&&x<40&&z>9&&z<20)||(Math.abs(x)<2&&z>7&&z<36)||(Math.abs(z-26)<1.6)||(x>-10&&x<18&&z>-42&&z<-22)||(x>-64&&x<-41&&z>11&&z<37)||(x>-44&&x<44&&z>40&&z<55)||(x>-41&&x<-39&&z>24&&z<28))return false;
@@ -3314,7 +3744,7 @@ function grassFree(x,z){
  for(const hx of[-36,-24,-12,12,24,36]){if(Math.abs(x-hx)<1.2&&z>41&&z<45.5)return false;}
  for(const c of colliders){if(c.L&&c.L!=='out')continue;if(x>c.x1-0.4&&x<c.x2+0.4&&z>c.z1-0.4&&z<c.z2+0.4)return false;}
  return true;}
-function realGrass(){if(!RQ.grass)return;const geo=bladeGeo(),m=new THREE.MeshStandardMaterial({vertexColors:true,side:THREE.DoubleSide,color:seasonMats.grassTuft.color.clone(),roughness:0.85});
+function realGrass(){if(!RQ.grass)return;const geo=bladeGeo(),m=new THREE.MeshStandardMaterial({map:grassClumpTex(),alphaTest:0.42,vertexColors:true,side:THREE.DoubleSide,color:seasonMats.grassTuft.color.clone(),roughness:0.88});noFlipNormals(m);
  m.userData.gcls=4;gPatch(m,4);const ob=m.onBeforeCompile;
  m.onBeforeCompile=s=>{ob(s);s.uniforms.uTime=RU.uTime;s.uniforms.uGR=RU.uGR;s.vertexShader='uniform float uTime;uniform float uGR;\n'+s.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
   {vec3 ip=vec3(instanceMatrix[3][0],instanceMatrix[3][1],instanceMatrix[3][2]);float gd=distance(ip.xz,cameraPosition.xz);transformed*=1.0-smoothstep(uGR*0.72,uGR,gd);
@@ -3378,7 +3808,7 @@ function realTick(dt){RU.uTime.value+=dt;
  if(W.bulbMat&&!W.bulbMat.userData.hdr){W.bulbMat.userData.hdr=1;W.bulbMat.color.setRGB(2.6,2.2,1.5);}
  // Laub: Karten folgen der Jahreszeit, Kern etwas dunkler für Tiefe
  if(CARDM.length){CARDM.forEach(m=>m.color.copy(m.userData.src.color).multiplyScalar(m.userData.dark));seasonMats.leafA.color.multiplyScalar(0.62);seasonMats.leafB.color.multiplyScalar(0.62);}
- if(W.grassMat)W.grassMat.color.copy(seasonMats.grassTuft.color).multiplyScalar(1.3);
+ if(W.grassMat)W.grassMat.color.copy(seasonMats.grassTuft.color).multiplyScalar(0.96);
  if(W.grassCh){const px=player.x,pz=player.z,R2=(RU.uGR.value+12)**2;W.grassCh.forEach(c=>{const d=(c.userData.c[0]-px)**2+(c.userData.c[1]-pz)**2;c.visible=out&&d<R2;});}
  if(W.rLights&&W.rLights.length){const px=player.x,pz=player.z;const srt=LAMPS.map(p=>[p,(p[0]-px)**2+(p[1]-pz)**2]).sort((x,y)=>x[1]-y[1]);
   W.rLights.forEach((l,i)=>{const p=srt[i][0];l.position.set(p[0],3.25,p[1]);l.intensity=night&&out?9:0;});}
@@ -3629,7 +4059,7 @@ openWorkbench=function(){
  const row=t=>{const T=MT[t],pr=machPrice(t);let d=T.desc;if(T.rec)d+='<br><small>'+T.rec.map(r=>(r.st>(S.w.stufe||0)?'🔒 ':'')+recTxt(r)).join('<br>')+'</small>';else if(T.in)d+=' ('+itemName(T.in)+' → '+(T.out?itemName(T.out):'')+', '+T.t+' s je Charge)';
   return '<div class="tech"><b>'+T.n+'</b><p>'+d+(T.kw?' · '+T.kw+' kW':'')+'</p><span class="hint">'+g2(pr)+'</span> <button data-m="'+t+'" data-n="1">1× kaufen</button><button data-m="'+t+'" data-n="2">2×</button></div>';};
  const locked=t=>{const T=MT[t];return '<div class="tech locked"><b>'+T.n+'</b><p>'+T.desc+'</p><span class="hint">ab Stufe '+T.st+' („'+STUFEN[T.st].n+'“)</span></div>';};
- const render=()=>{let h='<div class="hint">Alle Preise netto; dazu 20 % USt (Vorsteuer holst du zurück). Gekauftes hältst du in der Hand und stellst es in der Halle oder im Keller selbst auf. Du trägst '+carryLabel()+(carryN()?'':'nichts')+'.</div>';
+ const render=()=>{let h='<div class="hint">Alle Preise netto; dazu 20 % USt (Vorsteuer holst du zurück). Gekauftes hältst du in der Hand und stellst es mit <b>E / Klick</b> in der Halle oder im Keller auf – oder stellst es mit <b>X / Rechtsklick</b> jederzeit als Paket ab. Du trägst '+(carryLabel()||'nichts')+'.'+(S.w.carry&&S.w.carry.kind==='machine'?' <button data-dropcrate="1">Getragene Maschine als Paket abstellen (X)</button>':'')+'</div>';
   h+='<h3>Maschinen &amp; Stationen</h3>';
   const groups=[[0,'Stufe 0 – Zigaretten & Kassa-Zubehör',['cig']],[1,'Stufe 1 – Dreh-Ecke',[]],[2,'Stufe 2 – Genießer-Ecke',['cigar']],[3,'Stufe 3 – Tradition & Alpenland',[]],[4,'Stufe 4 – Dampfer-Ecke',['liq','ecig']],[5,'Stufe 5 – Moderne Trafik',[]],[6,'Stufe 6 – Shisha-Lounge',[]]];
   groups.forEach(([s,n,ps])=>{h+='<details'+(s===(S.w.stufe||0)?' open':'')+'><summary><b>'+n+'</b></summary>';ps.forEach(p=>{if(S.unlocked[p])STEPS[p].forEach(t=>{h+=row(t);});});
@@ -3640,6 +4070,7 @@ openWorkbench=function(){
   if(S.w.lvl<3){const pr=CEL_PRICE[S.w.lvl];h+='<div class="tech"><b>Keller erweitern (Stufe '+(S.w.lvl+1)+' von 3)</b><p>Mehr Platz für Produktion unter der Halle: +Fläche.</p><span class="hint">'+g2(pr)+'</span> <button data-cel="1">Ausbauen</button></div>';}
   else h+='<div class="tech done"><b>Keller</b><p>Voll ausgebaut. ✔</p></div>';
   $('dlgBody').innerHTML=h;
+  bindDlg('[data-dropcrate]',()=>{dropMachineCrate();rerender(render);});
   bindDlg('[data-m]',b=>{const t=b.dataset.m,n=parseInt(b.dataset.n,10);buyMachine(t,n);rerender(render);});
   bindDlg('[data-pv]',b=>{const n=parseInt(b.dataset.pv,10);buyPV(n);rerender(render);});
   bindDlg('[data-cel]',()=>{const pr=CEL_PRICE[S.w.lvl];if(spend(pr,'invest')){S.w.lvl++;rebuildCellar();toast('Der Keller wurde erweitert – mehr Platz zum Bauen!');S.goals.cellar=true;}else toast('Dafür reicht die Kassa gerade nicht.');rerender(render);});};
@@ -4264,7 +4695,7 @@ buildMachineMesh=function(type){
  g.userData.lab=labelSprite();g.userData.lab.position.set(0,tall?3.0:2.6,0);g.add(g.userData.lab);return g;};
 
 // ===== Version & Update-Prüfung (GitHub Pages) =====
-const GAME_VERSION='2026.10.25-2';
+const GAME_VERSION='2026.10.26-1';
 const UPDATE_URL='https://asmodia3009.github.io/trafik-spiel/';
 const IS_APP=!!(window.trafikApp&&window.trafikApp.isApp);
 function cmpVer(a,b){const pa=String(a).split(/[.\-]/).map(n=>parseInt(n,10)||0),pb=String(b).split(/[.\-]/).map(n=>parseInt(n,10)||0);for(let i=0;i<Math.max(pa.length,pb.length);i++){const d=(pa[i]||0)-(pb[i]||0);if(d)return d>0?1:-1;}return 0;}
@@ -4335,6 +4766,12 @@ const Ctl={
 // ===== Start & Hauptschleife =====
 let started=false;
 function labelsRefresh(){
+ for(const cr of(S.w.crates||[])){
+  if(!cr.g)continue;const lab=cr.g.userData.lab;if(!lab)continue;
+  if(cr.L!==player.L){lab.visible=false;continue;}
+  const d=Math.hypot(cr.x-player.x,cr.z-player.z);
+  lab.visible=d<12&&(selTarget&&selTarget.cid===cr.id||d<6);
+ }
  for(const m of S.w.mach){if(m.L!==player.L)continue;const dd=Math.hypot(m.x-player.x,m.z-player.z);if(dd>(selTarget&&selTarget.mid===m.id?30:11)||dd<3.2){m.g.userData.lab.visible=false;continue;}
   const T=MT[m.type],lab=m.g.userData.lab;lab.visible=true;let l2='';
   if(m.type==='uv')l2=m.o>0?m.o+' Kisten bereit':m.st===0?'leer – bitte säen':m.st===1?'wächst: '+Math.round(m.pr/T.t*100)+' %':'reif – ernten!';
@@ -4399,6 +4836,7 @@ function boot(){
  S=loadState();
  buildAll();initPlayer();registerWorld();
  S.w.mach.forEach(m=>createMachine(m.type,m.x,m.z,m.r,m.L,m));
+ (S.w.crates=S.w.crates||[]).forEach(c=>createCrate(c.type,c.x,c.z,c.L,c));
  migrateWB();
  refreshPV();refreshFurn();refreshVillage();
  W.trees.forEach(t=>{if(S.w.trees[t.id])fellTree(t,true);});
@@ -4410,7 +4848,7 @@ function boot(){
  $('loading').style.display='none';
  if(!S.intro)openIntro();else{toast('Willkommen zurück im Dorf.');$('pause').style.display=VARIANT==='fp'?'flex':'none';}
  requestAnimationFrame(frame);
- window.__tt={S:()=>S,MT,rebuildCellar,player:()=>player,mach,createMachine,W,inters,doInteract,computeTargets,setLayer,openWorkbench,customers,jobs,weather,power,toast,selT:()=>selTarget,gameTick,Ctl,goDown,bldAct,plotAct,buyMachine,startRouteMode,routeClick,getNode,pop,reachable,doAlt,renderer,scene,camera,workerRT,startAudio,refreshPV,refreshFurn,refreshVillage,updatePlotVis};
+ window.__tt={S:()=>S,MT,rebuildCellar,player:()=>player,mach,crates,createMachine,createCrate,dropMachineCrate,pickCrate,unpackCrate,updateGhost,placeGhost,updateCarryVis,ghost:()=>ghost,W,inters,doInteract,computeTargets,setLayer,openWorkbench,customers,jobs,weather,power,toast,selT:()=>selTarget,gameTick,Ctl,goDown,bldAct,plotAct,buyMachine,startRouteMode,routeClick,getNode,pop,reachable,doAlt,renderer,scene,camera,workerRT,startAudio,refreshPV,refreshFurn,refreshVillage,updatePlotVis};
 }
 window.addEventListener('error',e=>{const el=$('loading');if(el&&el.style.display!=='none')el.textContent='Fehler: '+e.message;});
 boot();
