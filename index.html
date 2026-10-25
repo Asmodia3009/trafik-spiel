@@ -81,7 +81,7 @@ label.sl{display:block;font-size:13px;margin:6px 0 2px}ul.help{padding-left:18px
 </div>
 <div id="cross"></div>
 <div id="photoHint">Fotomodus: Klick / Enter speichert ein Bild · P beendet</div>
-<div id="pause"><div>Klicke, um weiterzuspielen</div><button id="pauseMenu">⚙ Menü &amp; Steuerung</button></div>
+<div id="pause"><div>Klicke, um weiterzuspielen</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button id="pauseMenu">⚙ Menü &amp; Steuerung</button><button id="pauseQuit" style="display:none;background:linear-gradient(180deg,#8c2d19,#661d0e);color:#fff8ec;border-color:#d88a6c">🚪 Spiel beenden</button></div></div>
 <div id="fade"></div>
 <div id="dlg"><div id="dlgBox"><div id="dlgHead"><h2 id="dlgTitle"></h2><button id="dlgClose" class="ghost">Schließen</button></div><div id="dlgBody"></div></div></div>
 <script>console.warn('Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation'),
@@ -2097,12 +2097,12 @@ function glossary(){
  return '<h3>Kleines Dorf-Lexikon</h3>'+G.map(x=>'<div class="kv"><span><b>'+x[0]+'</b></span><span style="text-align:right;max-width:70%">'+x[1]+'</span></div>').join('');
 }
 function openMenu(){
- const h='<div class="hint">Dein Spielstand wird alle 20 Sekunden automatisch gesichert.</div><h3>Steuerung</h3>'+helpText()+'<div class="sl" style="margin:8px 0"><label>Zeittempo: <b id="spLbl">'+SPEEDS[S.speed][0]+'</b></label><input type="range" id="spR" min="0" max="4" step="1" value="'+S.speed+'" style="width:100%"><div class="hint">Bestimmt den Lauf von Tag &amp; Nacht, Jahreszeiten und Pflanzenwachstum. Standard: Normal (ein Tag ≈ 12 Min).</div></div><div class="sl" style="margin:8px 0"><label>Grafikqualität: <b>'+({niedrig:'Niedrig',mittel:'Mittel',hoch:'Hoch'})[GFXQ]+'</b></label><div>'+['niedrig','mittel','hoch'].map(q=>'<button class="bGfx" data-q="'+q+'"'+(q===GFXQ?' style="outline:2px solid #d8a050"':'')+'>'+({niedrig:'Niedrig',mittel:'Mittel',hoch:'Hoch'})[q]+'</button>').join('')+'</div><div class="hint">Niedrig: sparsam für integrierte Grafik. Mittel: ausgewogen. Hoch: feine Texturen, dichtes Gras &amp; weiche Schatten.</div></div><div><button id="bMusic">Musik: '+(S.music?'an':'aus')+'</button><button id="bSave" class="ghost">Jetzt speichern</button><button id="bPhoto" class="ghost">Fotomodus</button><button id="bLog" class="ghost">Tagebuch</button><button id="bReset" class="ghost">Neu anfangen</button></div>'+updateSection()+glossary();
+ const h='<div class="hint">Dein Spielstand wird alle 20 Sekunden automatisch gesichert.</div><h3>Steuerung</h3>'+helpText()+'<div class="sl" style="margin:8px 0"><label>Zeittempo: <b id="spLbl">'+SPEEDS[S.speed][0]+'</b></label><input type="range" id="spR" min="0" max="4" step="1" value="'+S.speed+'" style="width:100%"><div class="hint">Bestimmt den Lauf von Tag &amp; Nacht, Jahreszeiten und Pflanzenwachstum. Standard: Normal (ein Tag ≈ 12 Min).</div></div><div class="sl" style="margin:8px 0"><label>Grafikqualität: <b>'+({niedrig:'Niedrig',mittel:'Mittel',hoch:'Hoch'})[GFXQ]+'</b></label><div>'+['niedrig','mittel','hoch'].map(q=>'<button class="bGfx" data-q="'+q+'"'+(q===GFXQ?' style="outline:2px solid #d8a050"':'')+'>'+({niedrig:'Niedrig',mittel:'Mittel',hoch:'Hoch'})[q]+'</button>').join('')+'</div><div class="hint">Niedrig: sparsam für integrierte Grafik. Mittel: ausgewogen. Hoch: feine Texturen, dichtes Gras &amp; weiche Schatten.</div></div><div><button id="bMusic">Musik: '+(S.music?'an':'aus')+'</button><button id="bSave" class="ghost">Jetzt speichern</button><button id="bPhoto" class="ghost">Fotomodus</button><button id="bLog" class="ghost">Tagebuch</button><button id="bReset" class="ghost">Neu anfangen</button>'+(IS_APP?'<button id="bQuitTop" style="background:linear-gradient(180deg,#8c2d19,#661d0e);color:#fff8ec;border-color:#d88a6c">🚪 Spiel beenden</button>':'')+'</div>'+updateSection()+glossary();
  openDlg('Menü & Einstellungen',h);bindUpdate();
  $('spR').oninput=e=>{S.speed=+e.target.value;S.speedChosen=true;$('spLbl').textContent=SPEEDS[S.speed][0];};$('spR').onchange=()=>saveState();
  document.querySelectorAll('.bGfx').forEach(el=>el.onclick=()=>{const q=el.dataset.q;if(q===GFXQ)return;setGfxQuality(q);saveState();window.removeEventListener('beforeunload',saveState);location.reload();});
  $('bMusic').onclick=()=>{toggleMusic();$('bMusic').textContent='Musik: '+(S.music?'an':'aus');};$('bSave').onclick=()=>{saveState();toast('Spielstand gespeichert.');};$('bPhoto').onclick=()=>{closeDlg();togglePhoto();};$('bLog').onclick=()=>{closeDlg();openLog();};
- $('bReset').onclick=()=>{if(confirm('Wirklich ganz von vorne beginnen?')){localStorage.removeItem(SAVE_KEY);window.removeEventListener('beforeunload',saveState);location.reload();}};
+ if($('bQuitTop'))$('bQuitTop').onclick=()=>{saveState();window.trafikApp.quit();};$('bReset').onclick=()=>{if(confirm('Wirklich ganz von vorne beginnen?')){localStorage.removeItem(SAVE_KEY);window.removeEventListener('beforeunload',saveState);location.reload();}};
 }
 function openIntro(){
  openDlg('Willkommen im Dorf',
@@ -3859,12 +3859,12 @@ buildMachineMesh=function(type){
  g.userData.lab=labelSprite();g.userData.lab.position.set(0,tall?3.0:2.6,0);g.add(g.userData.lab);return g;};
 
 // ===== Version & Update-Prüfung (GitHub Pages) =====
-const GAME_VERSION='2026.10.24-2';
+const GAME_VERSION='2026.10.25-1';
 const UPDATE_URL='https://asmodia3009.github.io/trafik-spiel/';
 const IS_APP=!!(window.trafikApp&&window.trafikApp.isApp);
 function cmpVer(a,b){const pa=String(a).split(/[.\-]/).map(n=>parseInt(n,10)||0),pb=String(b).split(/[.\-]/).map(n=>parseInt(n,10)||0);for(let i=0;i<Math.max(pa.length,pb.length);i++){const d=(pa[i]||0)-(pb[i]||0);if(d)return d>0?1:-1;}return 0;}
 function updateSection(){
- return '<div class="sl" style="margin:8px 0"><label>Version: <b>'+GAME_VERSION+'</b>'+(IS_APP?' (App)':'')+'</label><div><button id="bUpd">Nach Update suchen</button>'+(IS_APP?'<button id="bQuit" class="ghost">Spiel beenden</button>':'')+'</div><div class="hint" id="updMsg">Dein Spielstand bleibt bei einem Update erhalten.</div></div>';
+ return '<div class="sl" style="margin:8px 0"><label>Version: <b>'+GAME_VERSION+'</b>'+(IS_APP?' (App)':'')+'</label><div><button id="bUpd">🔄 Nach Update suchen</button>'+(IS_APP?'<button id="bQuit" style="background:linear-gradient(180deg,#8c2d19,#661d0e);color:#fff8ec;border-color:#d88a6c">🚪 Spiel beenden</button>':'')+'</div><div class="hint" id="updMsg">Dein Spielstand bleibt bei einem Update erhalten.</div></div>';
 }
 async function fetchRemoteVersion(){
  if(IS_APP&&window.trafikApp.checkUpdate)return await window.trafikApp.checkUpdate();
@@ -3985,7 +3985,7 @@ function initInput(){
  $('dlgClose').onclick=closeDlg;
  $('dlg').addEventListener('mousedown',e=>{if(e.target===$('dlg'))closeDlg();});
  $('bMenu').onclick=openMenu;$('bLogB').onclick=openLog;$('bPhotoB').onclick=togglePhoto;$('bMusicB').onclick=toggleMusic;
- $('pauseMenu').onclick=e=>{e.stopPropagation();openMenu();};
+ $('pauseMenu').onclick=e=>{e.stopPropagation();openMenu();};if($('pauseQuit')&&window.trafikApp&&window.trafikApp.isApp){$('pauseQuit').style.display='';$('pauseQuit').onclick=e=>{e.stopPropagation();saveState();window.trafikApp.quit();};}
 }
 function boot(){
  S=loadState();
